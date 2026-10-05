@@ -16,7 +16,13 @@ button{cursor:pointer}button.p{background:var(--p);border-color:var(--p);color:#
 .r1{flex-wrap:nowrap}.r1>input{min-width:0}#q{flex:3 1 0}#year{flex:1 1 0}
 .row.f{flex-wrap:nowrap}.row.f>select{flex:1 1 0;min-width:0;padding:10px 6px;text-overflow:ellipsis}
 #list{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));margin-top:6px}
-.card{background:var(--c);border:1px solid var(--b);border-radius:14px;padding:12px}
+.card{background:var(--c);border:1px solid var(--b);border-left:6px solid var(--b);border-radius:14px;padding:12px;cursor:pointer}
+.card.sKR{background:rgba(43,181,140,.17);border-left-color:#2bb58c}
+.card.sR{background:rgba(42,111,219,.15);border-left-color:#2a6fdb}
+.card.sK{background:rgba(217,142,4,.18);border-left-color:#d98e04}
+.card.open{box-shadow:0 0 0 2px var(--p)}.card input,.card select,.card button,.card label{cursor:auto}.card button,.card select{cursor:pointer}
+.fam{margin-top:10px;display:flex;flex-direction:column;gap:6px;cursor:auto}.fam .card{padding:8px 10px}.fh{font-weight:600}
+.lg i{display:inline-block;width:10px;height:10px;border-radius:2px;margin:0 3px 0 8px;vertical-align:-1px}
 .card h3{margin:0 0 2px;font-size:17px}.m{color:var(--m);font-size:14px}
 .dc{display:flex;justify-content:space-between;align-items:baseline;margin:2px 0}
 .dob{text-align:left}.cccd{text-align:right;font:600 17px ui-monospace,monospace;letter-spacing:.5px}
@@ -30,9 +36,11 @@ button{cursor:pointer}button.p{background:var(--p);border-color:var(--p);color:#
 .tab{display:flex;gap:6px}.tab button{flex:1}.tab .on{background:var(--p);color:#fff}
 #hd{display:none}#toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#222;color:#fff;padding:8px 16px;border-radius:20px;opacity:0;transition:.3s;z-index:30}
 [hidden]{display:none!important}
-@media(max-width:819px){.dk{display:none!important}}
+@media(max-width:819px){.dk{display:none!important}
+.ctl{display:flex;flex-direction:column;border-top:1px dashed var(--b);margin-top:8px}.card:not(.open) .ctl{display:none}
+.kc{order:1}.rc{order:2}.cc2{order:3}.wp{order:4}}
 @media(min-width:820px){
-.mo{display:none!important}.w{max-width:1400px}
+.mo{display:none!important}.w{max-width:1400px}.ctl{display:contents}.fam{grid-column:1/-1;margin:4px 0 0 10px}
 #list{grid-template-columns:1fr;gap:6px}
 .card,#hd{display:grid;grid-template-columns:var(--cols);gap:10px;align-items:center}
 .card{padding:8px 12px;border-radius:10px}.dc{display:contents}.cccd{font-size:15px;text-align:left}
@@ -45,8 +53,8 @@ button{cursor:pointer}button.p{background:var(--p);border-color:var(--p);color:#
 <div id="app" hidden>
 <div class="bar"><div class="tab"><button class="on" data-t="s">Tra cứu</button><button data-t="i">Nhập Excel</button><button class="s" id="out">Thoát</button></div>
 <div id="ts"><div class="row r1"><input id="q" type="search" placeholder="Tìm theo tên hoặc CCCD…" autocomplete="off"><input id="year" type="number" inputmode="numeric" placeholder="Năm sinh"></div>
-<div class="row f"><select id="thon"><option value="">Tất cả thôn</option></select><select id="st"><option value="">Khám: tất cả</option><option value="1">Đã khám</option><option value="0">Chưa khám</option></select><select id="rs"></select></div></div></div>
-<div id="vs"><div id="hd"><span>Họ tên</span><span>Ngày sinh</span><span>CCCD</span><span>Giới tính · Thôn</span><span>Tình trạng khám</span><span>Công ty / cơ quan</span><span>Nơi công tác</span><span>Rà soát</span><span>Mã QR</span></div>
+<div class="row f"><select id="thon"><option value="">Tất cả thôn</option></select><select id="st"><option value="">Khám: tất cả</option><option value="1">Đã khám</option><option value="0">Chưa khám</option></select><select id="rs"></select></div><div id="stat" class="m" style="margin-top:6px;font-size:13px"></div></div></div>
+<div id="vs"><div class="m lg" style="font-size:12px;margin:6px 0"><i style="background:#2bb58c"></i>Đã khám + RS<i style="background:#2a6fdb"></i>Đã RS, chưa khám<i style="background:#d98e04"></i>Đã khám, chưa RS · RS = rà soát</div><div id="hd"><span>Họ tên</span><span>Ngày sinh</span><span>CCCD</span><span>Giới tính · Thôn</span><span>Tình trạng khám</span><span>Công ty / cơ quan</span><span>Nơi công tác</span><span>Rà soát</span><span>Mã QR</span></div>
 <div id="list"></div><p id="info" class="m"></p><div class="row"><button id="more" hidden>Xem thêm</button></div></div>
 <div id="vi" hidden><div class="card" style="display:block"><h3>Cập nhật hàng loạt từ Excel (đối chiếu theo CCCD)</h3>
 <p class="m">Dùng đúng mẫu cột: CCCD, Tình trạng khám, Nơi khám, Đang làm công ty, Nơi công tác, Nhóm đối tượng, Trạng thái rà soát. Ô trống = giữ nguyên dữ liệu cũ.</p>
@@ -67,6 +75,7 @@ $('#go').onclick=async()=>{const{error}=await sb.auth.signInWithPassword({email:
 $('#out').onclick=()=>sb.auth.signOut();
 sb.auth.onAuthStateChange((_,s)=>{$('#login').hidden=!!s;$('#app').hidden=!s;if(s)init()});
 async function init(){
+  loadStats();
   $('#rs').innerHTML='<option value="">Rà soát: tất cả</option>'+RS.map(x=>`<option>${x}</option>`).join('');
   const{data:t}=await sb.rpc('list_thons');$('#thon').innerHTML='<option value="">Tất cả thôn</option>'+(t||[]).map(x=>`<option>${esc(x)}</option>`).join('');
   const{data:w}=await sb.from('workplaces').select('name').order('name').limit(5000);wps=(w||[]).map(x=>x.name);fillWp();search();}
@@ -74,7 +83,7 @@ const fillWp=()=>{let d=$('#wpl');if(!d){d=document.createElement('datalist');d.
 const canon=n=>{n=(n||'').trim().replace(/\s+/g,' ');return wps.find(x=>norm(x)==norm(n))||n};
 // ---- tra cứu
 async function search(reset=true){
-  if(reset){page=0;$('#list').innerHTML='';rows={}}
+  if(reset){page=0;$('#list').innerHTML='';rows={};fam={};openSet.clear()}
   let q=sb.from('people').select('*').order('ho_ten').order('id').range(page*PAGE,page*PAGE+PAGE-1);
   const t=norm($('#q').value).replace(/[%,()*]/g,'');
   if(t)q=/^\d+$/.test(t)?q.ilike('cccd',`%${t}%`):q.ilike('search_key',`%${t}%`);
@@ -85,32 +94,53 @@ async function search(reset=true){
   const{data,error}=await q;if(error)return toast(error.message);
   data.forEach(p=>{rows[p.id]=p;$('#list').insertAdjacentHTML('beforeend',card(p))});
   $('#more').hidden=data.length<PAGE;$('#info').textContent=Object.keys(rows).length?'':'Không tìm thấy';page++}
-const card=p=>{const k=!!p.da_kham,r=p.trang_thai_ra_soat==RS[1],c=!!p.dang_lam_cty,ch=p.chu_ho?'Chủ hộ: '+esc(p.chu_ho):'';
-return `<div class="card" data-id="${p.id}">
+let openSet=new Set(),fam={},stat={t:0,k:0,r:0};
+const fmt=n=>n.toLocaleString('vi-VN');
+const showStats=()=>{const pc=n=>stat.t?Math.round(n*100/stat.t):0;$('#stat').innerHTML=`Tổng <b>${fmt(stat.t)}</b> · Khám <b>${fmt(stat.k)}</b> (${pc(stat.k)}%) · RS <b>${fmt(stat.r)}</b> (${pc(stat.r)}%)`};
+async function loadStats(){const c=q=>q.then(r=>r.count||0),T=()=>sb.from('people').select('id',{count:'exact',head:true});
+  const[t,k,r]=await Promise.all([c(T()),c(T().eq('da_kham',true)),c(T().eq('trang_thai_ra_soat',RS[1]))]);stat={t,k,r};showStats()}
+const stCls=p=>{const k=!!p.da_kham,r=p.trang_thai_ra_soat==RS[1];return k&&r?'sKR':r?'sR':k?'sK':''};
+const famHtml=p=>{if(!p.so_hsct)return'';const ids=fam[p.so_hsct];
+  const body=!ids?'<div class="m">Đang tải…</div>':ids.filter(i=>i!=p.id&&rows[i]).map(i=>card(rows[i],true)).join('')||'<div class="m">Không có người khác cùng hộ</div>';
+  return `<div class="fam"><div class="m fh">Cùng hộ</div>${body}</div>`};
+const card=(p,nested)=>{const k=!!p.da_kham,r=p.trang_thai_ra_soat==RS[1],c=!!p.dang_lam_cty,open=openSet.has(String(p.id)),ch=p.chu_ho?'Chủ hộ: '+esc(p.chu_ho):'';
+return `<div class="card ${stCls(p)} ${open?'open':''}" data-id="${p.id}" ${nested?'data-n="1"':''}>
 <div><h3>${esc(p.ho_ten)}</h3><div class="m dk">${ch}</div></div>
 <div class="dc"><span class="dob">${dmy(p.ngay_sinh)}</span><span class="cccd">${esc(p.cccd)}</span></div>
 <div class="m sub">${esc(p.gioi_tinh)} · ${esc(p.thon)}<span class="mo">${ch?' · '+ch:''}</span>${p.nhom_doi_tuong?' · '+esc(p.nhom_doi_tuong):''}</div>
-<div><div class="sg mo"><button data-a="k0" class="${k?'':'on no'}">Chưa khám</button><button data-a="k1" class="${k?'on':''}">Đã khám</button></div>
+<div class="ctl"><div class="kc"><div class="sg mo"><button data-a="k0" class="${k?'':'on no'}">Chưa khám</button><button data-a="k1" class="${k?'on':''}">Đã khám</button></div>
 <select class="dk ${k?'k1':'k0'}" data-a="ks"><option value="0" ${k?'':'selected'}>Chưa khám</option><option value="1" ${k?'selected':''}>Đã khám</option></select>
 ${p.noi_kham?`<div class="m">Nơi khám: ${esc(p.noi_kham)}</div>`:''}</div>
-<div><label class="tg mo"><input type="checkbox" data-a="cty" ${c?'checked':''}> Làm công ty / cơ quan</label>
+<div class="cc2"><label class="tg mo"><input type="checkbox" data-a="cty" ${c?'checked':''}> Làm công ty / cơ quan</label>
 <select class="dk" data-a="ctys"><option value="0" ${c?'':'selected'}>Không làm</option><option value="1" ${c?'selected':''}>Có làm cty/cơ quan</option></select></div>
 <input class="wp" list="wpl" placeholder="Nơi công tác" value="${esc(p.noi_cong_tac)}" ${c?'':'disabled'}>
-<div><div class="sg rs mo"><button data-a="r0" class="${r?'':'on no'}">${RS[0]}</button><button data-a="r1" class="${r?'on':''}">${RS[1]}</button></div>
-<select class="dk ${r?'r1':'r0'}" data-a="rss"><option value="0" ${r?'':'selected'}>${RS[0]}</option><option value="1" ${r?'selected':''}>${RS[1]}</option></select></div>
-<button class="sm dk" data-a="qr">Sao chép QR</button></div>`};
+<div class="rc"><div class="sg rs mo"><button data-a="r0" class="${r?'':'on no'}">${RS[0]}</button><button data-a="r1" class="${r?'on':''}">${RS[1]}</button></div>
+<select class="dk ${r?'r1':'r0'}" data-a="rss"><option value="0" ${r?'':'selected'}>${RS[0]}</option><option value="1" ${r?'selected':''}>${RS[1]}</option></select></div></div>
+<button class="sm dk" data-a="qr">Sao chép QR</button>${open&&!nested?famHtml(p):''}</div>`};
 async function save(id,patch){const{error}=await sb.from('people').update(patch).eq('id',id);if(error){toast('Lỗi: '+error.message);return false}
   if(patch.noi_cong_tac&&!wps.includes(patch.noi_cong_tac)){await sb.from('workplaces').upsert({name:patch.noi_cong_tac},{onConflict:'name',ignoreDuplicates:true});wps.push(patch.noi_cong_tac);wps.sort();fillWp()}
   toast('Đã lưu ✓');return true}
-const draw=(id,foc)=>{const el=document.querySelector(`.card[data-id="${id}"]`);if(!el)return;el.outerHTML=card(rows[id]);
+const draw=(id,foc)=>{if(!rows[id])return;document.querySelectorAll(`.card[data-id="${id}"]`).forEach(el=>{if(el.isConnected)el.outerHTML=card(rows[id],!!el.dataset.n)});
   if(foc){const w=document.querySelector(`.card[data-id="${id}"] .wp`);if(w&&w.offsetParent)w.focus()}};
-async function upd(id,patch,foc){const old={...rows[id]};Object.assign(rows[id],patch);draw(id,foc);if(!await save(id,patch)){rows[id]=old;draw(id)}}
+const bump=(a,b)=>{stat.k+=(!!b.da_kham)-(!!a.da_kham);stat.r+=(b.trang_thai_ra_soat==RS[1])-(a.trang_thai_ra_soat==RS[1]);showStats()};
+async function upd(id,patch,foc){const old={...rows[id]};Object.assign(rows[id],patch);bump(old,rows[id]);draw(id,foc);if(!await save(id,patch)){rows[id]=old;draw(id);loadStats()}}
+const KHAM=v=>v?{da_kham:true,trang_thai_ra_soat:RS[1]}:{da_kham:false};   // đã khám => tự đã rà soát
+async function loadFam(id){const p=rows[id];if(!p||!p.so_hsct)return;
+  if(!fam[p.so_hsct]){const{data}=await sb.from('people').select('*').eq('so_hsct',p.so_hsct).order('ngay_sinh').limit(40);
+    (data||[]).forEach(m=>{rows[m.id]=rows[m.id]||m});fam[p.so_hsct]=(data||[]).map(m=>m.id)}
+  if(openSet.has(String(id)))draw(id)}
+function toggle(id,nested){id=String(id);
+  if(openSet.has(id))openSet.delete(id);
+  else{if(!nested){const prev=[...openSet];openSet.clear();prev.forEach(i=>draw(i))}openSet.add(id)}
+  draw(id);if(openSet.has(id)&&!nested)loadFam(id)}
 const qrText=p=>`${p.cccd}||${p.ho_ten}|${(p.ngay_sinh||'').split('-').reverse().join('')}|${p.gioi_tinh||''}|${p.thon||''}${ADDR_SUFFIX}|`;
 const copy=async t=>{try{await navigator.clipboard.writeText(t);toast('Đã sao chép mã QR')}catch{prompt('Sao chép:',t)}};
-$('#list').addEventListener('click',e=>{const b=e.target.closest('button[data-a]');if(!b)return;const id=b.closest('.card').dataset.id,a=b.dataset.a;
-  if(a=='qr')copy(qrText(rows[id]));else if(a[0]=='k')upd(id,{da_kham:a=='k1'});else if(a[0]=='r')upd(id,{trang_thai_ra_soat:RS[+(a=='r1')]})});
+$('#list').addEventListener('click',e=>{const c=e.target.closest('.card');if(!c)return;const id=c.dataset.id,nested=!!c.dataset.n,b=e.target.closest('button[data-a]');
+  if(b){const a=b.dataset.a;if(a=='qr')copy(qrText(rows[id]));else if(a[0]=='k')upd(id,KHAM(a=='k1'));else if(a[0]=='r')upd(id,{trang_thai_ra_soat:RS[+(a=='r1')]});return}
+  if(e.target.closest('input,select,label,button,.fam')&&!nested&&e.target.closest('.fam'))return;
+  if(e.target.closest('input,select,label,button'))return;toggle(id,nested)});
 $('#list').addEventListener('change',e=>{const t=e.target,id=t.closest('.card').dataset.id,a=t.dataset.a;
-  if(a=='ks')upd(id,{da_kham:t.value=='1'});
+  if(a=='ks')upd(id,KHAM(t.value=='1'));
   else if(a=='rss')upd(id,{trang_thai_ra_soat:RS[+t.value]});
   else if(a=='cty'||a=='ctys'){const v=a=='cty'?t.checked:t.value=='1';upd(id,v?{dang_lam_cty:true}:{dang_lam_cty:false,noi_cong_tac:null},v)}
   else if(t.classList.contains('wp')){const n=canon(t.value);t.value=n;rows[id].noi_cong_tac=n||null;save(id,{noi_cong_tac:n||null})}});
@@ -143,5 +173,5 @@ $('#run').onclick=async()=>{$('#run').disabled=true;let ok=0;const add=$('#addne
     if(error){$('#pr').textContent=`Lỗi ở dòng ${i+1}–${Math.min(i+CH,recs.length)}: ${error.message}. Bấm "Bắt đầu" để chạy lại, dữ liệu đã nạp sẽ không bị trùng.`;$('#run').disabled=false;return}
     ok+=data;$('#pr').textContent=`Đã xử lý ${Math.min(i+CH,recs.length)}/${recs.length}…`}
   $('#pr').textContent=`Xong: khớp & cập nhật ${ok}/${recs.length} dòng.`+(ok<recs.length&&!add?' Dòng không khớp = CCCD chưa có trong CSDL.':'');
-  const{data:w}=await sb.from('workplaces').select('name').order('name').limit(5000);wps=(w||[]).map(x=>x.name);fillWp();search()};
+  const{data:w}=await sb.from('workplaces').select('name').order('name').limit(5000);wps=(w||[]).map(x=>x.name);fillWp();loadStats();search()};
 </script></body></html>
