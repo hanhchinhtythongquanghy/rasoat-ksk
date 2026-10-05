@@ -19,7 +19,6 @@ button{cursor:pointer}button.p{background:var(--p);border-color:var(--p);color:#
 .card{background:var(--c);border:1px solid var(--b);border-left:6px solid var(--b);border-radius:14px;padding:12px;cursor:pointer}
 .card.sKR{background:rgba(43,181,140,.17);border-left-color:#2bb58c}
 .card.sR{background:rgba(42,111,219,.15);border-left-color:#2a6fdb}
-.card.sK{background:rgba(217,142,4,.18);border-left-color:#d98e04}
 .card.open{box-shadow:0 0 0 2px var(--p)}.card input,.card select,.card button,.card label{cursor:auto}.card button,.card select{cursor:pointer}
 .fam{margin-top:10px;display:flex;flex-direction:column;gap:6px;cursor:auto}.fam .card{padding:8px 10px}.fh{font-weight:600}
 .lg i{display:inline-block;width:10px;height:10px;border-radius:2px;margin:0 3px 0 8px;vertical-align:-1px}
@@ -54,7 +53,7 @@ button{cursor:pointer}button.p{background:var(--p);border-color:var(--p);color:#
 <div class="bar"><div class="tab"><button class="on" data-t="s">Tra cứu</button><button data-t="i">Nhập Excel</button><button class="s" id="out">Thoát</button></div>
 <div id="ts"><div class="row r1"><input id="q" type="search" placeholder="Tìm theo tên hoặc CCCD…" autocomplete="off"><input id="year" type="number" inputmode="numeric" placeholder="Năm sinh"></div>
 <div class="row f"><select id="thon"><option value="">Tất cả thôn</option></select><select id="st"><option value="">Khám: tất cả</option><option value="1">Đã khám</option><option value="0">Chưa khám</option></select><select id="rs"></select></div><div id="stat" class="m" style="margin-top:6px;font-size:13px"></div></div></div>
-<div id="vs"><div class="m lg" style="font-size:12px;margin:6px 0"><i style="background:#2bb58c"></i>Đã khám + RS<i style="background:#2a6fdb"></i>Đã RS, chưa khám<i style="background:#d98e04"></i>Đã khám, chưa RS · RS = rà soát</div><div id="hd"><span>Họ tên</span><span>Ngày sinh</span><span>CCCD</span><span>Giới tính · Thôn</span><span>Tình trạng khám</span><span>Công ty / cơ quan</span><span>Nơi công tác</span><span>Rà soát</span><span>Mã QR</span></div>
+<div id="vs"><div class="m lg" style="font-size:12px;margin:6px 0"><i style="background:#2bb58c"></i>Đã khám (gồm đã RS)<i style="background:#2a6fdb"></i>Đã RS, chưa khám · RS = rà soát</div><div id="hd"><span>Họ tên</span><span>Ngày sinh</span><span>CCCD</span><span>Giới tính · Thôn</span><span>Tình trạng khám</span><span>Công ty / cơ quan</span><span>Nơi công tác</span><span>Rà soát</span><span>Mã QR</span></div>
 <div id="list"></div><p id="info" class="m"></p><div class="row"><button id="more" hidden>Xem thêm</button></div></div>
 <div id="vi" hidden><div class="card" style="display:block"><h3>Cập nhật hàng loạt từ Excel (đối chiếu theo CCCD)</h3>
 <p class="m">Dùng đúng mẫu cột: CCCD, Tình trạng khám, Nơi khám, Đang làm công ty, Nơi công tác, Nhóm đối tượng, Trạng thái rà soát. Ô trống = giữ nguyên dữ liệu cũ.</p>
@@ -63,10 +62,11 @@ button{cursor:pointer}button.p{background:var(--p);border-color:var(--p);color:#
 </div></div><div id="toast"></div>
 <script>
 const SUPABASE_URL='https://smozxcfjfzouhcxvgcdp.supabase.co',SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNtb3p4Y2ZqZnpvdWhjeHZnY2RwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcyOTY4MTEsImV4cCI6MjEwMjg3MjgxMX0.W2aZAQTalUeRib4B3dHRvzv0i-7RakwbQkPz2qYdeBs';
-const ADDR_SUFFIX=', Xã Hồng Quang';   // nối vào thôn khi tạo mã QR giả lập
+const ADDR_SUFFIX=', xã Hồng Quang, tỉnh Hưng Yên';   // nối vào thôn khi tạo mã QR giả lập
 const RS=['Chưa rà soát','Đã rà soát'];
 const PAGE=30,sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY),$=s=>document.querySelector(s);
 const norm=s=>(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[đĐ]/g,'d').toLowerCase().trim().replace(/\s+/g,' ');
+const stripAddr=s=>{const p=String(s??'').split(',').map(x=>x.trim());const k=p.findIndex((x,i)=>i>0&&/^(xa|huyen|tinh|thanh pho|tp|phuong|thi tran|quan)\b/.test(norm(x)));return(k>0?p.slice(0,k):p).join(', ')};
 const dmy=d=>d?d.split('-').reverse().join('/'):'';const esc=s=>(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const toast=m=>{const t=$('#toast');t.textContent=m;t.style.opacity=1;clearTimeout(t.h);t.h=setTimeout(()=>t.style.opacity=0,1800)};
 let page=0,rows={},wps=[],timer;
@@ -99,15 +99,15 @@ const fmt=n=>n.toLocaleString('vi-VN');
 const showStats=()=>{const pc=n=>stat.t?Math.round(n*100/stat.t):0;$('#stat').innerHTML=`Tổng <b>${fmt(stat.t)}</b> · Khám <b>${fmt(stat.k)}</b> (${pc(stat.k)}%) · RS <b>${fmt(stat.r)}</b> (${pc(stat.r)}%)`};
 async function loadStats(){const c=q=>q.then(r=>r.count||0),T=()=>sb.from('people').select('id',{count:'exact',head:true});
   const[t,k,r]=await Promise.all([c(T()),c(T().eq('da_kham',true)),c(T().eq('trang_thai_ra_soat',RS[1]))]);stat={t,k,r};showStats()}
-const stCls=p=>{const k=!!p.da_kham,r=p.trang_thai_ra_soat==RS[1];return k&&r?'sKR':r?'sR':k?'sK':''};
+const stCls=p=>{const k=!!p.da_kham,r=k||p.trang_thai_ra_soat==RS[1];return k?'sKR':r?'sR':''};
 const famHtml=p=>{if(!p.so_hsct)return'';const ids=fam[p.so_hsct];
   const body=!ids?'<div class="m">Đang tải…</div>':ids.filter(i=>i!=p.id&&rows[i]).map(i=>card(rows[i],true)).join('')||'<div class="m">Không có người khác cùng hộ</div>';
   return `<div class="fam"><div class="m fh">Cùng hộ</div>${body}</div>`};
-const card=(p,nested)=>{const k=!!p.da_kham,r=p.trang_thai_ra_soat==RS[1],c=!!p.dang_lam_cty,open=openSet.has(String(p.id)),ch=p.chu_ho?'Chủ hộ: '+esc(p.chu_ho):'';
+const card=(p,nested)=>{const k=!!p.da_kham,r=k||p.trang_thai_ra_soat==RS[1],c=!!p.dang_lam_cty,open=openSet.has(String(p.id)),ch=p.chu_ho?'Chủ hộ: '+esc(p.chu_ho):'';
 return `<div class="card ${stCls(p)} ${open?'open':''}" data-id="${p.id}" ${nested?'data-n="1"':''}>
 <div><h3>${esc(p.ho_ten)}</h3><div class="m dk">${ch}</div></div>
 <div class="dc"><span class="dob">${dmy(p.ngay_sinh)}</span><span class="cccd">${esc(p.cccd)}</span></div>
-<div class="m sub">${esc(p.gioi_tinh)} · ${esc(p.thon)}<span class="mo">${ch?' · '+ch:''}</span>${p.nhom_doi_tuong?' · '+esc(p.nhom_doi_tuong):''}</div>
+<div class="m sub">${esc(p.gioi_tinh)} · ${esc(stripAddr(p.thon))}<span class="mo">${ch?' · '+ch:''}</span>${p.nhom_doi_tuong?' · '+esc(p.nhom_doi_tuong):''}</div>
 <div class="ctl"><div class="kc"><div class="sg mo"><button data-a="k0" class="${k?'':'on no'}">Chưa khám</button><button data-a="k1" class="${k?'on':''}">Đã khám</button></div>
 <select class="dk ${k?'k1':'k0'}" data-a="ks"><option value="0" ${k?'':'selected'}>Chưa khám</option><option value="1" ${k?'selected':''}>Đã khám</option></select>
 ${p.noi_kham?`<div class="m">Nơi khám: ${esc(p.noi_kham)}</div>`:''}</div>
@@ -133,15 +133,15 @@ function toggle(id,nested){id=String(id);
   if(openSet.has(id))openSet.delete(id);
   else{if(!nested){const prev=[...openSet];openSet.clear();prev.forEach(i=>draw(i))}openSet.add(id)}
   draw(id);if(openSet.has(id)&&!nested)loadFam(id)}
-const qrText=p=>`${p.cccd}||${p.ho_ten}|${(p.ngay_sinh||'').split('-').reverse().join('')}|${p.gioi_tinh||''}|${p.thon||''}${ADDR_SUFFIX}|`;
+const qrText=p=>`${p.cccd}||${p.ho_ten}|${(p.ngay_sinh||'').split('-').reverse().join('')}|${p.gioi_tinh||''}|${stripAddr(p.thon)}${ADDR_SUFFIX}|`;
 const copy=async t=>{try{await navigator.clipboard.writeText(t);toast('Đã sao chép mã QR')}catch{prompt('Sao chép:',t)}};
 $('#list').addEventListener('click',e=>{const c=e.target.closest('.card');if(!c)return;const id=c.dataset.id,nested=!!c.dataset.n,b=e.target.closest('button[data-a]');
-  if(b){const a=b.dataset.a;if(a=='qr')copy(qrText(rows[id]));else if(a[0]=='k')upd(id,KHAM(a=='k1'));else if(a[0]=='r')upd(id,{trang_thai_ra_soat:RS[+(a=='r1')]});return}
+  if(b){const a=b.dataset.a;if(a=='qr')copy(qrText(rows[id]));else if(a[0]=='k')upd(id,KHAM(a=='k1'));else if(a[0]=='r'){if(a=='r0'&&rows[id].da_kham)toast('Đã khám thì mặc định là đã rà soát');else upd(id,{trang_thai_ra_soat:RS[+(a=='r1')]})}return}
   if(e.target.closest('input,select,label,button,.fam')&&!nested&&e.target.closest('.fam'))return;
   if(e.target.closest('input,select,label,button'))return;toggle(id,nested)});
 $('#list').addEventListener('change',e=>{const t=e.target,id=t.closest('.card').dataset.id,a=t.dataset.a;
   if(a=='ks')upd(id,KHAM(t.value=='1'));
-  else if(a=='rss')upd(id,{trang_thai_ra_soat:RS[+t.value]});
+  else if(a=='rss'){if(t.value=='0'&&rows[id].da_kham){toast('Đã khám thì mặc định là đã rà soát');draw(id)}else upd(id,{trang_thai_ra_soat:RS[+t.value]})}
   else if(a=='cty'||a=='ctys'){const v=a=='cty'?t.checked:t.value=='1';upd(id,v?{dang_lam_cty:true}:{dang_lam_cty:false,noi_cong_tac:null},v)}
   else if(t.classList.contains('wp')){const n=canon(t.value);t.value=n;rows[id].noi_cong_tac=n||null;save(id,{noi_cong_tac:n||null})}});
 ['#q','#year'].forEach(s=>$(s).oninput=()=>{clearTimeout(timer);timer=setTimeout(search,300)});
@@ -162,7 +162,7 @@ $('#f').onchange=async e=>{const f=e.target.files[0];if(!f)return;const wb=XLSX.
     if(o.trang_thai_ra_soat!=null){o.trang_thai_ra_soat=rsP(o.trang_thai_ra_soat);if(o.trang_thai_ra_soat==null)delete o.trang_thai_ra_soat}
     if(o.noi_cong_tac){o.noi_cong_tac=canon(String(o.noi_cong_tac));if(o.dang_lam_cty==null)o.dang_lam_cty=true}
     ['ho_ten','gioi_tinh','chu_ho','so_hsct','thon','nhom_doi_tuong','noi_kham'].forEach(k=>{if(o[k]!=null)o[k]=String(o[k]).trim()});
-    if(o.stt!=null)o.stt=parseInt(o.stt)||null;return o}).filter(Boolean);
+    if(o.thon)o.thon=stripAddr(o.thon);if(o.stt!=null)o.stt=parseInt(o.stt)||null;return o}).filter(Boolean);
   const n0=recs.length,mp=new Map();recs.forEach(o=>mp.set(o.cccd,Object.assign(mp.get(o.cccd)||{},o)));recs=[...mp.values()];
   $('#pr').textContent=`Đọc được ${n0} dòng có CCCD`+(n0>recs.length?` (gộp ${n0-recs.length} dòng trùng CCCD)`:'');$('#run').disabled=!recs.length};
 const CH=200,wait=ms=>new Promise(r=>setTimeout(r,ms));
