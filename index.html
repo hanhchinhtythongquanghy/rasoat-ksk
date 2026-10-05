@@ -2,45 +2,61 @@
 <meta name="viewport" content="width=device-width,initial-scale=1"><title>Rà soát khám sức khỏe</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
 <style>
-:root{--bg:#f4f6f8;--c:#fff;--t:#1d2733;--m:#6b7785;--p:#0b7a5b;--b:#dde3ea;--r:#c0392b}
+:root{--bg:#f4f6f8;--c:#fff;--t:#1d2733;--m:#6b7785;--p:#0b7a5b;--b:#dde3ea;--r:#c0392b;--bl:#2a6fdb;--am:#d98e04;
+--cols:minmax(170px,2fr) 96px 130px minmax(150px,1.5fr) 120px 150px minmax(150px,1.6fr) 130px 120px}
 @media(prefers-color-scheme:dark){:root{--bg:#12171c;--c:#1c242c;--t:#e8eef3;--m:#93a1ae;--p:#2bb58c;--b:#2c3742}}
 *{box-sizing:border-box}body{margin:0;font:16px system-ui,sans-serif;background:var(--bg);color:var(--t)}
 .w{max-width:960px;margin:auto;padding:10px}
 input,select,button{font:inherit;color:inherit;background:var(--c);border:1px solid var(--b);border-radius:10px;padding:10px 12px;min-height:44px}
+select option{background:var(--c);color:var(--t)}
 button{cursor:pointer}button.p{background:var(--p);border-color:var(--p);color:#fff}
 .bar{position:sticky;top:0;background:var(--bg);padding:8px 0;z-index:5}
 .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.row>*{flex:1 1 120px}.row .s{flex:0 0 auto}
+.r1{flex-wrap:nowrap}.r1>input{min-width:0}#q{flex:3 1 0}#year{flex:1 1 0}
+.row.f{flex-wrap:nowrap}.row.f>select{flex:1 1 0;min-width:0;padding:10px 6px;text-overflow:ellipsis}
 #list{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));margin-top:6px}
 .card{background:var(--c);border:1px solid var(--b);border-radius:14px;padding:12px}
 .card h3{margin:0 0 2px;font-size:17px}.m{color:var(--m);font-size:14px}
-.cc{font:600 20px ui-monospace,monospace;letter-spacing:1px;margin:6px 0}
+.dc{display:flex;justify-content:space-between;align-items:baseline;margin:2px 0}
+.dob{text-align:left}.cccd{text-align:right;font:600 17px ui-monospace,monospace;letter-spacing:.5px}
 .sg{display:flex;border:1px solid var(--b);border-radius:10px;overflow:hidden;margin:8px 0}
 .sg button{flex:1;border:0;border-radius:0}.sg button.on{background:var(--p);color:#fff}.sg button.on.no{background:var(--r)}
+.sg.rs button.on{background:var(--bl)}.sg.rs button.on.no{background:var(--am)}
 .tg{display:flex;align-items:center;gap:8px;margin:6px 0}.tg input{width:22px;height:22px;min-height:0}
-.card input.wp,.card select{width:100%}.sm{padding:6px 10px;min-height:36px;font-size:14px}
+.card input.wp,.card select{width:100%}.wp:disabled{display:none}.sm{padding:6px 10px;min-height:36px;font-size:14px}
+.card select.k1{background:var(--p);color:#fff;border-color:var(--p)}.card select.k0{background:var(--r);color:#fff;border-color:var(--r)}
+.card select.r1{background:var(--bl);color:#fff;border-color:var(--bl)}.card select.r0{background:var(--am);color:#fff;border-color:var(--am)}
 .tab{display:flex;gap:6px}.tab button{flex:1}.tab .on{background:var(--p);color:#fff}
-#scan{position:fixed;inset:0;background:#000d;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}
-#reader{width:min(92vw,420px)}#toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#222;color:#fff;padding:8px 16px;border-radius:20px;opacity:0;transition:.3s;z-index:30}
+#hd{display:none}#toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#222;color:#fff;padding:8px 16px;border-radius:20px;opacity:0;transition:.3s;z-index:30}
 [hidden]{display:none!important}
+@media(max-width:819px){.dk{display:none!important}}
+@media(min-width:820px){
+.mo{display:none!important}.w{max-width:1400px}
+#list{grid-template-columns:1fr;gap:6px}
+.card,#hd{display:grid;grid-template-columns:var(--cols);gap:10px;align-items:center}
+.card{padding:8px 12px;border-radius:10px}.dc{display:contents}.cccd{font-size:15px;text-align:left}
+#hd{padding:0 12px;margin-top:8px;color:var(--m);font-size:13px;font-weight:600}
+.card h3{font-size:15px;margin:0}.card select,.card input.wp{min-height:38px;padding:6px 8px}
+.wp:disabled{display:block;opacity:.4}
+.row.f>select{flex:0 1 220px}.r1{max-width:700px}}
 </style></head><body><div class="w">
 <div id="login" hidden><h2>Đăng nhập</h2><div class="row"><input id="em" type="email" placeholder="Email"><input id="pw" type="password" placeholder="Mật khẩu"><button class="p s" id="go">Đăng nhập</button></div><p id="le" class="m"></p></div>
 <div id="app" hidden>
 <div class="bar"><div class="tab"><button class="on" data-t="s">Tra cứu</button><button data-t="i">Nhập Excel</button><button class="s" id="out">Thoát</button></div>
-<div id="ts"><div class="row"><input id="q" type="search" placeholder="Tìm theo tên hoặc CCCD…" autocomplete="off"><button class="s" id="sc">📷 Quét CCCD</button></div>
-<div class="row"><input id="year" type="number" inputmode="numeric" placeholder="Năm sinh"><select id="thon"><option value="">Tất cả thôn</option></select><select id="st"><option value="">Mọi tình trạng</option><option value="1">Đã khám</option><option value="0">Chưa khám</option></select><select id="rs"><option value="">Mọi trạng thái rà soát</option></select></div></div></div>
-<div id="vs"><div id="list"></div><p id="info" class="m"></p><div class="row"><button id="more" hidden>Xem thêm</button></div></div>
-<div id="vi" hidden><div class="card"><h3>Cập nhật hàng loạt từ Excel (đối chiếu theo CCCD)</h3>
+<div id="ts"><div class="row r1"><input id="q" type="search" placeholder="Tìm theo tên hoặc CCCD…" autocomplete="off"><input id="year" type="number" inputmode="numeric" placeholder="Năm sinh"></div>
+<div class="row f"><select id="thon"><option value="">Tất cả thôn</option></select><select id="st"><option value="">Khám: tất cả</option><option value="1">Đã khám</option><option value="0">Chưa khám</option></select><select id="rs"></select></div></div></div>
+<div id="vs"><div id="hd"><span>Họ tên</span><span>Ngày sinh</span><span>CCCD</span><span>Giới tính · Thôn</span><span>Tình trạng khám</span><span>Công ty / cơ quan</span><span>Nơi công tác</span><span>Rà soát</span><span>Mã QR</span></div>
+<div id="list"></div><p id="info" class="m"></p><div class="row"><button id="more" hidden>Xem thêm</button></div></div>
+<div id="vi" hidden><div class="card" style="display:block"><h3>Cập nhật hàng loạt từ Excel (đối chiếu theo CCCD)</h3>
 <p class="m">Dùng đúng mẫu cột: CCCD, Tình trạng khám, Nơi khám, Đang làm công ty, Nơi công tác, Nhóm đối tượng, Trạng thái rà soát. Ô trống = giữ nguyên dữ liệu cũ.</p>
 <input type="file" id="f" accept=".xlsx,.xls,.csv"><label class="tg"><input type="checkbox" id="addnew"> Thêm người mới nếu chưa có trong CSDL (dùng để nạp danh sách gốc 50.000 người)</label>
 <button class="p" id="run" disabled>Bắt đầu</button><p id="pr" class="m"></p></div></div>
-</div></div>
-<div id="scan" hidden><div id="reader"></div><button id="sx">Đóng</button></div><div id="toast"></div>
+</div></div><div id="toast"></div>
 <script>
-const SUPABASE_URL='https://smozxcfjfzouhcxvgcdp.supabase.co',SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNtb3p4Y2ZqZnpvdWhjeHZnY2RwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcyOTY4MTEsImV4cCI6MjEwMjg3MjgxMX0.W2aZAQTalUeRib4B3dHRvzv0i-7RakwbQkPz2qYdeBs';
+const SUPABASE_URL='https://YOUR-PROJECT.supabase.co',SUPABASE_KEY='YOUR-ANON-KEY';
 const ADDR_SUFFIX=', Xã Hồng Quang';   // nối vào thôn khi tạo mã QR giả lập
-const RS=['Chưa rà soát','Đã rà soát','Cần xác minh'];   // sửa danh sách trạng thái ở đây
+const RS=['Chưa rà soát','Đã rà soát'];
 const PAGE=30,sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY),$=s=>document.querySelector(s);
 const norm=s=>(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[đĐ]/g,'d').toLowerCase().trim().replace(/\s+/g,' ');
 const dmy=d=>d?d.split('-').reverse().join('/'):'';const esc=s=>(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -51,7 +67,7 @@ $('#go').onclick=async()=>{const{error}=await sb.auth.signInWithPassword({email:
 $('#out').onclick=()=>sb.auth.signOut();
 sb.auth.onAuthStateChange((_,s)=>{$('#login').hidden=!!s;$('#app').hidden=!s;if(s)init()});
 async function init(){
-  $('#rs').innerHTML='<option value="">Mọi trạng thái rà soát</option>'+RS.map(x=>`<option>${x}</option>`).join('');
+  $('#rs').innerHTML='<option value="">Rà soát: tất cả</option>'+RS.map(x=>`<option>${x}</option>`).join('');
   const{data:t}=await sb.rpc('list_thons');$('#thon').innerHTML='<option value="">Tất cả thôn</option>'+(t||[]).map(x=>`<option>${esc(x)}</option>`).join('');
   const{data:w}=await sb.from('workplaces').select('name').order('name').limit(5000);wps=(w||[]).map(x=>x.name);fillWp();search();}
 const fillWp=()=>{let d=$('#wpl');if(!d){d=document.createElement('datalist');d.id='wpl';document.body.append(d)}d.innerHTML=wps.map(x=>`<option value="${esc(x)}">`).join('')};
@@ -69,39 +85,43 @@ async function search(reset=true){
   const{data,error}=await q;if(error)return toast(error.message);
   data.forEach(p=>{rows[p.id]=p;$('#list').insertAdjacentHTML('beforeend',card(p))});
   $('#more').hidden=data.length<PAGE;$('#info').textContent=Object.keys(rows).length?'':'Không tìm thấy';page++}
-const card=p=>`<div class="card" data-id="${p.id}"><h3>${esc(p.ho_ten)}</h3>
-<div class="m">${dmy(p.ngay_sinh)} · ${esc(p.gioi_tinh)} · ${esc(p.thon)}</div>
-<div class="m">Chủ hộ: ${esc(p.chu_ho)} · HSCT ${esc(p.so_hsct)}${p.nhom_doi_tuong?' · '+esc(p.nhom_doi_tuong):''}</div>
-<div class="cc">${esc(p.cccd)}</div>
-<div class="row"><button class="sm" data-a="cp">Sao chép CCCD</button><button class="sm" data-a="qr">Sao chép mã QR</button></div>
-<select class="rsel" data-a="rs">${RS.concat(RS.includes(p.trang_thai_ra_soat)?[]:[p.trang_thai_ra_soat]).map(x=>`<option ${x==p.trang_thai_ra_soat?'selected':''}>${esc(x)}</option>`).join('')}</select>
-<div class="sg"><button data-a="k0" class="${p.da_kham?'':'on no'}">Chưa khám</button><button data-a="k1" class="${p.da_kham?'on':''}">Đã khám</button></div>
-${p.noi_kham?`<div class="m">Nơi khám: ${esc(p.noi_kham)}</div>`:''}
-<label class="tg"><input type="checkbox" data-a="cty" ${p.dang_lam_cty?'checked':''}> Làm công ty / cơ quan</label>
-<input class="wp" list="wpl" placeholder="Nơi công tác" value="${esc(p.noi_cong_tac)}" ${p.dang_lam_cty?'':'hidden'}></div>`;
-async function save(id,patch){const{error}=await sb.from('people').update(patch).eq('id',id);if(error)return toast('Lỗi: '+error.message);
+const card=p=>{const k=!!p.da_kham,r=p.trang_thai_ra_soat==RS[1],c=!!p.dang_lam_cty,ch=p.chu_ho?'Chủ hộ: '+esc(p.chu_ho):'';
+return `<div class="card" data-id="${p.id}">
+<div><h3>${esc(p.ho_ten)}</h3><div class="m dk">${ch}</div></div>
+<div class="dc"><span class="dob">${dmy(p.ngay_sinh)}</span><span class="cccd">${esc(p.cccd)}</span></div>
+<div class="m sub">${esc(p.gioi_tinh)} · ${esc(p.thon)}<span class="mo">${ch?' · '+ch:''}</span>${p.nhom_doi_tuong?' · '+esc(p.nhom_doi_tuong):''}</div>
+<div><div class="sg mo"><button data-a="k0" class="${k?'':'on no'}">Chưa khám</button><button data-a="k1" class="${k?'on':''}">Đã khám</button></div>
+<select class="dk ${k?'k1':'k0'}" data-a="ks"><option value="0" ${k?'':'selected'}>Chưa khám</option><option value="1" ${k?'selected':''}>Đã khám</option></select>
+${p.noi_kham?`<div class="m">Nơi khám: ${esc(p.noi_kham)}</div>`:''}</div>
+<div><label class="tg mo"><input type="checkbox" data-a="cty" ${c?'checked':''}> Làm công ty / cơ quan</label>
+<select class="dk" data-a="ctys"><option value="0" ${c?'':'selected'}>Không làm</option><option value="1" ${c?'selected':''}>Có làm cty/cơ quan</option></select></div>
+<input class="wp" list="wpl" placeholder="Nơi công tác" value="${esc(p.noi_cong_tac)}" ${c?'':'disabled'}>
+<div><div class="sg rs mo"><button data-a="r0" class="${r?'':'on no'}">${RS[0]}</button><button data-a="r1" class="${r?'on':''}">${RS[1]}</button></div>
+<select class="dk ${r?'r1':'r0'}" data-a="rss"><option value="0" ${r?'':'selected'}>${RS[0]}</option><option value="1" ${r?'selected':''}>${RS[1]}</option></select></div>
+<button class="sm dk" data-a="qr">Sao chép QR</button></div>`};
+async function save(id,patch){const{error}=await sb.from('people').update(patch).eq('id',id);if(error){toast('Lỗi: '+error.message);return false}
   if(patch.noi_cong_tac&&!wps.includes(patch.noi_cong_tac)){await sb.from('workplaces').upsert({name:patch.noi_cong_tac},{onConflict:'name',ignoreDuplicates:true});wps.push(patch.noi_cong_tac);wps.sort();fillWp()}
-  Object.assign(rows[id],patch);toast('Đã lưu ✓')}
+  toast('Đã lưu ✓');return true}
+const draw=(id,foc)=>{const el=document.querySelector(`.card[data-id="${id}"]`);if(!el)return;el.outerHTML=card(rows[id]);
+  if(foc){const w=document.querySelector(`.card[data-id="${id}"] .wp`);if(w&&w.offsetParent)w.focus()}};
+async function upd(id,patch,foc){const old={...rows[id]};Object.assign(rows[id],patch);draw(id,foc);if(!await save(id,patch)){rows[id]=old;draw(id)}}
 const qrText=p=>`${p.cccd}||${p.ho_ten}|${(p.ngay_sinh||'').split('-').reverse().join('')}|${p.gioi_tinh||''}|${p.thon||''}${ADDR_SUFFIX}|`;
-const copy=async t=>{try{await navigator.clipboard.writeText(t);toast('Đã sao chép')}catch{prompt('Sao chép:',t)}};
-$('#list').addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b)return;const c=b.closest('.card'),id=c.dataset.id,p=rows[id],a=b.dataset.a;
-  if(a=='cp')copy(p.cccd);else if(a=='qr')copy(qrText(p));
-  else if(a[0]=='k'){const v=a=='k1';c.querySelectorAll('.sg button').forEach(x=>x.className='');b.className=v?'on':'on no';save(id,{da_kham:v})}});
-$('#list').addEventListener('change',e=>{const c=e.target.closest('.card'),id=c.dataset.id;
-  if(e.target.dataset.a=='rs')save(id,{trang_thai_ra_soat:e.target.value});
-  else if(e.target.dataset.a=='cty'){const v=e.target.checked,w=c.querySelector('.wp');w.hidden=!v;if(v)w.focus();save(id,v?{dang_lam_cty:true}:{dang_lam_cty:false,noi_cong_tac:null});if(!v)w.value=''}
-  else if(e.target.classList.contains('wp')){const n=canon(e.target.value);e.target.value=n;save(id,{noi_cong_tac:n||null})}});
+const copy=async t=>{try{await navigator.clipboard.writeText(t);toast('Đã sao chép mã QR')}catch{prompt('Sao chép:',t)}};
+$('#list').addEventListener('click',e=>{const b=e.target.closest('button[data-a]');if(!b)return;const id=b.closest('.card').dataset.id,a=b.dataset.a;
+  if(a=='qr')copy(qrText(rows[id]));else if(a[0]=='k')upd(id,{da_kham:a=='k1'});else if(a[0]=='r')upd(id,{trang_thai_ra_soat:RS[+(a=='r1')]})});
+$('#list').addEventListener('change',e=>{const t=e.target,id=t.closest('.card').dataset.id,a=t.dataset.a;
+  if(a=='ks')upd(id,{da_kham:t.value=='1'});
+  else if(a=='rss')upd(id,{trang_thai_ra_soat:RS[+t.value]});
+  else if(a=='cty'||a=='ctys'){const v=a=='cty'?t.checked:t.value=='1';upd(id,v?{dang_lam_cty:true}:{dang_lam_cty:false,noi_cong_tac:null},v)}
+  else if(t.classList.contains('wp')){const n=canon(t.value);t.value=n;rows[id].noi_cong_tac=n||null;save(id,{noi_cong_tac:n||null})}});
 ['#q','#year'].forEach(s=>$(s).oninput=()=>{clearTimeout(timer);timer=setTimeout(search,300)});
 ['#thon','#st','#rs'].forEach(s=>$(s).onchange=()=>search());$('#more').onclick=()=>search(false);
 document.querySelectorAll('.tab [data-t]').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab [data-t]').forEach(x=>x.classList.toggle('on',x==b));
   $('#ts').hidden=$('#vs').hidden=b.dataset.t!='s';$('#vi').hidden=b.dataset.t!='i'});
-// ---- quét CCCD (phụ)
-let scn;$('#sc').onclick=async()=>{$('#scan').hidden=false;scn=new Html5Qrcode('reader');
-  try{await scn.start({facingMode:'environment'},{fps:10,qrbox:250},t=>{const c=t.split('|')[0].trim();if(/^\d{9,12}$/.test(c)){closeScan();$('#q').value=c;search()}})}catch(e){toast('Không mở được camera');closeScan()}};
-async function closeScan(){try{await scn.stop()}catch{}$('#scan').hidden=true}$('#sx').onclick=closeScan;
 // ---- nhập Excel
 let recs=[];const H={'cccd':'cccd','ho va ten':'ho_ten','ngay sinh':'ngay_sinh','gioi tinh':'gioi_tinh','ho va ten chu ho':'chu_ho','so hsct':'so_hsct','noi thuong tru':'thon','nhom doi tuong':'nhom_doi_tuong','trang thai ra soat':'trang_thai_ra_soat','tinh trang kham':'da_kham','noi kham':'noi_kham','dang lam cong ty':'dang_lam_cty','noi cong tac':'noi_cong_tac','stt':'stt'};
 const yn=v=>{v=norm(String(v??''));if(!v)return null;if(/^(chua|khong|0|false|no|k$)/.test(v))return false;if(/^(da|co|x|1|true|yes|v)/.test(v))return true;return null};
+const rsP=v=>{v=norm(String(v??''));return!v?null:/^(chua|khong|0)/.test(v)?RS[0]:/^(da|co|x|1|v)/.test(v)?RS[1]:null};
 const dt=v=>{if(v==null||v==='')return null;if(typeof v=='number')return new Date(Math.round((v-25569)*864e5)).toISOString().slice(0,10);
   const m=String(v).match(/(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})/);return m?`${m[3]}-${m[2].padStart(2,'0')}-${m[1].padStart(2,'0')}`:/^\d{4}-\d\d-\d\d/.test(v)?v.slice(0,10):null};
 $('#f').onchange=async e=>{const f=e.target.files[0];if(!f)return;const wb=XLSX.read(await f.arrayBuffer(),{type:'array'});
@@ -109,9 +129,9 @@ $('#f').onchange=async e=>{const f=e.target.files[0];if(!f)return;const wb=XLSX.
   recs=best.map(r=>{const o={};for(const k in r){const f=H[norm(k)];if(f&&r[k]!=null&&r[k]!=='')o[f]=r[k]}
     if(o.cccd==null)return null;o.cccd=String(o.cccd).trim().padStart(12,'0');
     if(o.ngay_sinh!=null)o.ngay_sinh=dt(o.ngay_sinh);if(o.da_kham!=null)o.da_kham=yn(o.da_kham);if(o.dang_lam_cty!=null)o.dang_lam_cty=yn(o.dang_lam_cty);
+    if(o.trang_thai_ra_soat!=null){o.trang_thai_ra_soat=rsP(o.trang_thai_ra_soat);if(o.trang_thai_ra_soat==null)delete o.trang_thai_ra_soat}
     if(o.noi_cong_tac){o.noi_cong_tac=canon(String(o.noi_cong_tac));if(o.dang_lam_cty==null)o.dang_lam_cty=true}
     ['ho_ten','gioi_tinh','chu_ho','so_hsct','thon','nhom_doi_tuong','noi_kham'].forEach(k=>{if(o[k]!=null)o[k]=String(o[k]).trim()});
-    if(o.trang_thai_ra_soat!=null)o.trang_thai_ra_soat=RS.find(x=>norm(x)==norm(String(o.trang_thai_ra_soat)))||String(o.trang_thai_ra_soat).trim();
     if(o.stt!=null)o.stt=parseInt(o.stt)||null;return o}).filter(Boolean);
   const n0=recs.length,mp=new Map();recs.forEach(o=>mp.set(o.cccd,Object.assign(mp.get(o.cccd)||{},o)));recs=[...mp.values()];
   $('#pr').textContent=`Đọc được ${n0} dòng có CCCD`+(n0>recs.length?` (gộp ${n0-recs.length} dòng trùng CCCD)`:'');$('#run').disabled=!recs.length};
