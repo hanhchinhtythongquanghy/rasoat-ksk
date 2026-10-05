@@ -113,10 +113,15 @@ $('#f').onchange=async e=>{const f=e.target.files[0];if(!f)return;const wb=XLSX.
     ['ho_ten','gioi_tinh','chu_ho','so_hsct','thon','nhom_doi_tuong','noi_kham'].forEach(k=>{if(o[k]!=null)o[k]=String(o[k]).trim()});
     if(o.trang_thai_ra_soat!=null)o.trang_thai_ra_soat=RS.find(x=>norm(x)==norm(String(o.trang_thai_ra_soat)))||String(o.trang_thai_ra_soat).trim();
     if(o.stt!=null)o.stt=parseInt(o.stt)||null;return o}).filter(Boolean);
-  $('#pr').textContent=`Đọc được ${recs.length} dòng có CCCD`;$('#run').disabled=!recs.length};
+  const n0=recs.length,mp=new Map();recs.forEach(o=>mp.set(o.cccd,Object.assign(mp.get(o.cccd)||{},o)));recs=[...mp.values()];
+  $('#pr').textContent=`Đọc được ${n0} dòng có CCCD`+(n0>recs.length?` (gộp ${n0-recs.length} dòng trùng CCCD)`:'');$('#run').disabled=!recs.length};
+const CH=200,wait=ms=>new Promise(r=>setTimeout(r,ms));
+async function rpcRetry(args){let er;for(let t=0;t<4;t++){const{data,error}=await sb.rpc('bulk_upsert',args);if(!error)return{data};er=error;
+  if(/duplicate|violates|invalid input|syntax|does not exist|permission/i.test(error.message))break;await wait(2000*(t+1))}return{error:er}}
 $('#run').onclick=async()=>{$('#run').disabled=true;let ok=0;const add=$('#addnew').checked;
-  for(let i=0;i<recs.length;i+=500){const{data,error}=await sb.rpc('bulk_upsert',{rows:recs.slice(i,i+500),add_new:add});
-    if(error){$('#pr').textContent='Lỗi: '+error.message;return}ok+=data;$('#pr').textContent=`Đã xử lý ${Math.min(i+500,recs.length)}/${recs.length}…`}
+  for(let i=0;i<recs.length;i+=CH){const{data,error}=await rpcRetry({rows:recs.slice(i,i+CH),add_new:add});
+    if(error){$('#pr').textContent=`Lỗi ở dòng ${i+1}–${Math.min(i+CH,recs.length)}: ${error.message}. Bấm "Bắt đầu" để chạy lại, dữ liệu đã nạp sẽ không bị trùng.`;$('#run').disabled=false;return}
+    ok+=data;$('#pr').textContent=`Đã xử lý ${Math.min(i+CH,recs.length)}/${recs.length}…`}
   $('#pr').textContent=`Xong: khớp & cập nhật ${ok}/${recs.length} dòng.`+(ok<recs.length&&!add?' Dòng không khớp = CCCD chưa có trong CSDL.':'');
   const{data:w}=await sb.from('workplaces').select('name').order('name').limit(5000);wps=(w||[]).map(x=>x.name);fillWp();search()};
 </script></body></html>
