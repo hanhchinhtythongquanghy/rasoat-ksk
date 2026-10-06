@@ -4,7 +4,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 :root{--bg:#f4f6f8;--c:#fff;--t:#1d2733;--m:#6b7785;--p:#0b7a5b;--b:#dde3ea;--r:#c0392b;--bl:#2a6fdb;--am:#d98e04;
---cols:minmax(170px,2fr) 96px 130px minmax(150px,1.5fr) 120px 150px minmax(150px,1.6fr) 130px 120px}
+--cols:minmax(170px,2fr) 96px 130px minmax(150px,1.5fr) 120px 150px minmax(150px,1.6fr) 130px 100px 120px}
 @media(prefers-color-scheme:dark){:root{--bg:#12171c;--c:#1c242c;--t:#e8eef3;--m:#93a1ae;--p:#2bb58c;--b:#2c3742}}
 *{box-sizing:border-box}body{margin:0;font:16px system-ui,sans-serif;background:var(--bg);color:var(--t)}
 .w{max-width:960px;margin:auto;padding:10px}
@@ -20,6 +20,10 @@ button{cursor:pointer}button.p{background:var(--p);border-color:var(--p);color:#
 .card.sKR{background:rgba(43,181,140,.17);border-left-color:#2bb58c}
 .card.sR{background:rgba(42,111,219,.15);border-left-color:#2a6fdb}
 .card.open{box-shadow:0 0 0 2px var(--p)}.card input,.card select,.card button,.card label{cursor:auto}.card button,.card select{cursor:pointer}
+.card.sD{background:rgba(128,128,128,.2);border-left-color:#888}.card.sD h3{text-decoration:line-through;opacity:.75}
+.ts{font-size:12px;color:var(--m)}.ts:empty{display:none}.fh2{display:flex;justify-content:space-between;align-items:center}
+#dlg{position:fixed;inset:0;background:#000a;z-index:40;display:flex;align-items:center;justify-content:center;padding:12px}
+#dlg .box{background:var(--c);border-radius:14px;padding:16px;width:min(100%,420px);display:grid;gap:10px}#dlg .row{margin:0}
 .fam{margin-top:10px;display:flex;flex-direction:column;gap:6px;cursor:auto}.fam .card{padding:8px 10px}.fh{font-weight:600}
 .lg i{display:inline-block;width:10px;height:10px;border-radius:2px;margin:0 3px 0 8px;vertical-align:-1px}
 .card h3{margin:0 0 2px;font-size:17px}.m{color:var(--m);font-size:14px}
@@ -37,7 +41,7 @@ button{cursor:pointer}button.p{background:var(--p);border-color:var(--p);color:#
 [hidden]{display:none!important}
 @media(max-width:819px){.dk{display:none!important}
 .ctl{display:flex;flex-direction:column;border-top:1px dashed var(--b);margin-top:8px}.card:not(.open) .ctl{display:none}
-.kc{order:1}.rc{order:2}.cc2{order:3}.wp{order:4}}
+.kc{order:1}.rc{order:2}.cc2{order:3}.wp{order:4}.xc{order:5}}
 @media(min-width:820px){
 .mo{display:none!important}.w{max-width:1400px}.ctl{display:contents}.fam{grid-column:1/-1;margin:4px 0 0 10px}
 #list{grid-template-columns:1fr;gap:6px}
@@ -46,20 +50,23 @@ button{cursor:pointer}button.p{background:var(--p);border-color:var(--p);color:#
 #hd{padding:0 12px;margin-top:8px;color:var(--m);font-size:13px;font-weight:600}
 .card h3{font-size:15px;margin:0}.card select,.card input.wp{min-height:38px;padding:6px 8px}
 .wp:disabled{display:block;opacity:.4}
-.row.f>select{flex:0 1 220px}.r1{max-width:700px}}
+.row.f>select{flex:0 1 220px}.tf{max-width:900px}.r1{max-width:700px}}
 </style></head><body><div class="w">
 <div id="login" hidden><h2>Đăng nhập</h2><div class="row"><input id="em" type="email" placeholder="Email"><input id="pw" type="password" placeholder="Mật khẩu"><button class="p s" id="go">Đăng nhập</button></div><p id="le" class="m"></p></div>
 <div id="app" hidden>
 <div class="bar"><div class="tab"><button class="on" data-t="s">Tra cứu</button><button data-t="i">Nhập Excel</button><button class="s" id="out">Thoát</button></div>
 <div id="ts"><div class="row r1"><input id="q" type="search" placeholder="Tìm theo tên hoặc CCCD…" autocomplete="off"><input id="year" type="number" inputmode="numeric" placeholder="Năm sinh"></div>
-<div class="row f"><select id="thon"><option value="">Tất cả thôn</option></select><select id="st"><option value="">Khám: tất cả</option><option value="1">Đã khám</option><option value="0">Chưa khám</option></select><select id="rs"></select></div><div id="stat" class="m" style="margin-top:6px;font-size:13px"></div></div></div>
-<div id="vs"><div class="m lg" style="font-size:12px;margin:6px 0"><i style="background:#2bb58c"></i>Đã khám (gồm đã RS)<i style="background:#2a6fdb"></i>Đã RS, chưa khám · RS = rà soát</div><div id="hd"><span>Họ tên</span><span>Ngày sinh</span><span>CCCD</span><span>Giới tính · Thôn</span><span>Tình trạng khám</span><span>Công ty / cơ quan</span><span>Nơi công tác</span><span>Rà soát</span><span>Mã QR</span></div>
+<div class="row f"><select id="thon"><option value="">Tất cả thôn</option></select><select id="st"><option value="">Khám: tất cả</option><option value="1">Đã khám</option><option value="0">Chưa khám</option><option value="x">Đã chết</option></select><select id="rs"></select></div>
+<div class="row tf dk"><select id="tf"><option value="">Lọc theo thời gian cập nhật…</option><option value="ra_soat_at">Rà soát</option><option value="kham_at">Khám</option><option value="cong_tac_at">Công ty / nơi công tác</option><option value="chet_at">Đã chết</option><option value="updated_at">Bất kỳ thông tin nào</option></select><input type="date" id="d1" title="Từ ngày"><input type="date" id="d2" title="Đến ngày"><button class="s" id="today">Hôm nay</button><b id="cnt" class="s"></b></div><div id="stat" class="m" style="margin-top:6px;font-size:13px"></div></div></div>
+<div id="vs"><div class="m lg" style="font-size:12px;margin:6px 0"><i style="background:#2bb58c"></i>Đã khám (gồm đã RS)<i style="background:#2a6fdb"></i>Đã RS, chưa khám<i style="background:#888"></i>Đã chết · RS = rà soát</div><div id="hd"><span>Họ tên</span><span>Ngày sinh</span><span>CCCD</span><span>Giới tính · Thôn</span><span>Tình trạng khám</span><span>Công ty / cơ quan</span><span>Nơi công tác</span><span>Rà soát</span><span>Đã chết</span><span>Mã QR</span></div>
 <div id="list"></div><p id="info" class="m"></p><div class="row"><button id="more" hidden>Xem thêm</button></div></div>
 <div id="vi" hidden><div class="card" style="display:block"><h3>Cập nhật hàng loạt từ Excel (đối chiếu theo CCCD)</h3>
 <p class="m">Dùng đúng mẫu cột: CCCD, Tình trạng khám, Nơi khám, Đang làm công ty, Nơi công tác, Nhóm đối tượng, Trạng thái rà soát. Ô trống = giữ nguyên dữ liệu cũ.</p>
 <input type="file" id="f" accept=".xlsx,.xls,.csv"><label class="tg"><input type="checkbox" id="addnew"> Thêm người mới nếu chưa có trong CSDL (dùng để nạp danh sách gốc 50.000 người)</label>
 <button class="p" id="run" disabled>Bắt đầu</button><p id="pr" class="m"></p></div></div>
-</div></div><div id="toast"></div>
+</div></div><div id="dlg" hidden><div class="box"><h3 style="margin:0">Thêm đối tượng cùng hộ</h3><div class="m" id="dinfo"></div>
+<input id="nh" placeholder="Họ và tên *"><div class="row"><input id="nd" type="date" title="Ngày sinh"><select id="ng"><option value="">Giới tính</option><option>Nam</option><option>Nữ</option></select></div>
+<input id="nc" inputmode="numeric" maxlength="12" placeholder="CCCD (12 số, có thể để trống)"><div class="row"><button id="dx">Hủy</button><button class="p" id="ds">Lưu</button></div></div></div><div id="toast"></div>
 <script>
 const SUPABASE_URL='https://smozxcfjfzouhcxvgcdp.supabase.co',SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNtb3p4Y2ZqZnpvdWhjeHZnY2RwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcyOTY4MTEsImV4cCI6MjEwMjg3MjgxMX0.W2aZAQTalUeRib4B3dHRvzv0i-7RakwbQkPz2qYdeBs';
 const ADDR_SUFFIX=', xã Hồng Quang, tỉnh Hưng Yên';   // nối vào thôn khi tạo mã QR giả lập
@@ -86,28 +93,36 @@ async function search(reset=true){
   if(reset){page=0;$('#list').innerHTML='';rows={};fam={};openSet.clear()}
   const raw=$('#q').value.trim(),nfc=raw.normalize('NFC').toLowerCase().replace(/\s+/g,' '),base=norm(raw),
     plain=base.replace(/[%_\\,()*]/g,''),acc=!!plain&&!/^\d+$/.test(plain)&&base!==nfc;
-  const yr=$('#year').value?+$('#year').value:null,th=$('#thon').value||null,st=$('#st').value,rs=$('#rs').value||null;
+  const yr=$('#year').value?+$('#year').value:null,th=$('#thon').value||null,st=$('#st').value,rs=$('#rs').value||null,tf=$('#tf').value;
+  const kh=st===''||st=='x'?null:st=='1';
   let r;
-  if(acc&&plain.length>=3)   // gõ có dấu (từ 3 ký tự): khớp dấu xếp lên đầu
-    r=await sb.rpc('search_people',{p_q:plain,p_qa:vnCanon(nfc).replace(/[%_\\]/g,''),p_yr:yr,p_th:th,p_kh:st===''?null:st=='1',p_rs:rs,p_off:page*PAGE,p_lim:PAGE});
-  else{                      // không dấu: truy vấn trực tiếp như cũ (nhanh nhất)
-    let q=sb.from('people').select('*').order('ho_ten').order('id').range(page*PAGE,page*PAGE+PAGE-1);
+  if(acc&&plain.length>=3&&!tf)   // gõ có dấu (từ 3 ký tự): khớp dấu xếp lên đầu
+    r=await sb.rpc('search_people',{p_q:plain,p_qa:vnCanon(nfc).replace(/[%_\\]/g,''),p_yr:yr,p_th:th,p_kh:kh,p_rs:rs,p_chet:st=='x'?true:null,p_off:page*PAGE,p_lim:PAGE});
+  else{                      // không dấu / có lọc thời gian: truy vấn trực tiếp
+    let q=sb.from('people').select('*',tf?{count:'exact'}:{});
+    q=(tf?q.order(tf,{ascending:false}):q.order('ho_ten')).order('id').range(page*PAGE,page*PAGE+PAGE-1);
     if(plain)q=/^\d+$/.test(plain)?q.ilike('cccd',`%${plain}%`):q.ilike('search_key',`%${plain}%`);
-    if(yr)q=q.eq('nam_sinh',yr);if(th)q=q.eq('thon',th);if(st!=='')q=q.eq('da_kham',st=='1');if(rs)q=q.eq('trang_thai_ra_soat',rs);
+    if(yr)q=q.eq('nam_sinh',yr);if(th)q=q.eq('thon',th);if(kh!==null)q=q.eq('da_kham',kh);if(kh===false)q=q.eq('da_chet',false);if(st=='x')q=q.eq('da_chet',true);if(rs)q=q.eq('trang_thai_ra_soat',rs);
+    if(tf){const d1=$('#d1').value,d2=$('#d2').value||d1;q=q.not(tf,'is',null);
+      if(d1)q=q.gte(tf,new Date(d1+'T00:00:00').toISOString());if(d2)q=q.lte(tf,new Date(d2+'T23:59:59.999').toISOString())}
     r=await q}
+  $('#cnt').textContent=tf&&r.count!=null?`${fmt(r.count)} người`:'';
   const{data,error}=r;if(error)return toast(error.message);
   data.forEach(p=>{rows[p.id]=p;$('#list').insertAdjacentHTML('beforeend',card(p))});
   $('#more').hidden=data.length<PAGE;$('#info').textContent=Object.keys(rows).length?'':'Không tìm thấy';page++}
 const VP=[["oà", "òa"], ["oá", "óa"], ["oả", "ỏa"], ["oã", "õa"], ["oạ", "ọa"], ["oè", "òe"], ["oé", "óe"], ["oẻ", "ỏe"], ["oẽ", "õe"], ["oẹ", "ọe"], ["uỳ", "ùy"], ["uý", "úy"], ["uỷ", "ủy"], ["uỹ", "ũy"], ["uỵ", "ụy"]];const vnCanon=s=>VP.reduce((a,p)=>a.split(p[0]).join(p[1]),s);
-let openSet=new Set(),fam={},stat={t:0,k:0,r:0};
+let openSet=new Set(),fam={},stat={t:0,k:0,r:0,c:0};
 const fmt=n=>n.toLocaleString('vi-VN');
-const showStats=()=>{const pc=n=>stat.t?Math.round(n*100/stat.t):0;$('#stat').innerHTML=`Tổng <b>${fmt(stat.t)}</b> · Khám <b>${fmt(stat.k)}</b> (${pc(stat.k)}%) · RS <b>${fmt(stat.r)}</b> (${pc(stat.r)}%)`};
+const showStats=()=>{const pc=n=>stat.t?Math.round(n*100/stat.t):0;$('#stat').innerHTML=`Tổng <b>${fmt(stat.t)}</b> · Khám <b>${fmt(stat.k)}</b> (${pc(stat.k)}%) · RS <b>${fmt(stat.r)}</b> (${pc(stat.r)}%) · Chết <b>${fmt(stat.c)}</b>`};
 async function loadStats(){const c=q=>q.then(r=>r.count||0),T=()=>sb.from('people').select('id',{count:'exact',head:true});
-  const[t,k,r]=await Promise.all([c(T()),c(T().eq('da_kham',true)),c(T().eq('trang_thai_ra_soat',RS[1]))]);stat={t,k,r};showStats()}
-const stCls=p=>{const k=!!p.da_kham,r=k||p.trang_thai_ra_soat==RS[1];return k?'sKR':r?'sR':''};
+  const[t,k,r,x]=await Promise.all([c(T()),c(T().eq('da_kham',true)),c(T().eq('trang_thai_ra_soat',RS[1])),c(T().eq('da_chet',true))]);stat={t,k,r,c:x};showStats()}
+const fts=t=>{if(!t)return'';const d=new Date(t),z=n=>String(n).padStart(2,'0');return `${z(d.getDate())}/${z(d.getMonth()+1)} ${z(d.getHours())}:${z(d.getMinutes())}`};
+const tsH=(p,f)=>`<div class="m ts" data-ts="${f}">${p[f]?'cập nhật '+fts(p[f]):''}</div>`;
+const refreshTs=id=>document.querySelectorAll(`.card[data-id="${id}"] [data-ts]`).forEach(e=>{if(e.closest('.card').dataset.id!=id)return;const t=rows[id][e.dataset.ts];e.textContent=t?'cập nhật '+fts(t):''});
+const stCls=p=>{if(p.da_chet)return'sD';const k=!!p.da_kham,r=k||p.trang_thai_ra_soat==RS[1];return k?'sKR':r?'sR':''};
 const famHtml=p=>{if(!p.so_hsct)return'';const ids=fam[p.so_hsct];
   const body=!ids?'<div class="m">Đang tải…</div>':ids.filter(i=>i!=p.id&&rows[i]).map(i=>card(rows[i],true)).join('')||'<div class="m">Không có người khác cùng hộ</div>';
-  return `<div class="fam"><div class="m fh">Cùng hộ</div>${body}</div>`};
+  return `<div class="fam"><div class="fh2"><span class="m fh">Cùng hộ</span><button class="sm" data-a="add">+ Thêm đối tượng</button></div>${body}</div>`};
 const card=(p,nested)=>{const k=!!p.da_kham,r=k||p.trang_thai_ra_soat==RS[1],c=!!p.dang_lam_cty,open=openSet.has(String(p.id)),ch=p.chu_ho?'Chủ hộ: '+esc(p.chu_ho):'';
 return `<div class="card ${stCls(p)} ${open?'open':''}" data-id="${p.id}" ${nested?'data-n="1"':''}>
 <div><h3>${esc(p.ho_ten)}</h3><div class="m dk">${ch}</div></div>
@@ -115,19 +130,22 @@ return `<div class="card ${stCls(p)} ${open?'open':''}" data-id="${p.id}" ${nest
 <div class="m sub">${esc(p.gioi_tinh)} · ${esc(stripAddr(p.thon))}<span class="mo">${ch?' · '+ch:''}</span>${p.nhom_doi_tuong?' · '+esc(p.nhom_doi_tuong):''}</div>
 <div class="ctl"><div class="kc"><div class="sg mo"><button data-a="k0" class="${k?'':'on no'}">Chưa khám</button><button data-a="k1" class="${k?'on':''}">Đã khám</button></div>
 <select class="dk ${k?'k1':'k0'}" data-a="ks"><option value="0" ${k?'':'selected'}>Chưa khám</option><option value="1" ${k?'selected':''}>Đã khám</option></select>
-${p.noi_kham?`<div class="m">Nơi khám: ${esc(p.noi_kham)}</div>`:''}</div>
+${p.noi_kham?`<div class="m">Nơi khám: ${esc(p.noi_kham)}</div>`:''}${tsH(p,'kham_at')}</div>
 <div class="cc2"><label class="tg mo"><input type="checkbox" data-a="cty" ${c?'checked':''}> Làm công ty / cơ quan</label>
-<select class="dk" data-a="ctys"><option value="0" ${c?'':'selected'}>Không làm</option><option value="1" ${c?'selected':''}>Có làm cty/cơ quan</option></select></div>
+<select class="dk" data-a="ctys"><option value="0" ${c?'':'selected'}>Không làm</option><option value="1" ${c?'selected':''}>Có làm cty/cơ quan</option></select>${tsH(p,'cong_tac_at')}</div>
 <input class="wp" list="wpl" placeholder="Nơi công tác" value="${esc(p.noi_cong_tac)}" ${c?'':'disabled'}>
 <div class="rc"><div class="sg rs mo"><button data-a="r0" class="${r?'':'on no'}">${RS[0]}</button><button data-a="r1" class="${r?'on':''}">${RS[1]}</button></div>
-<select class="dk ${r?'r1':'r0'}" data-a="rss"><option value="0" ${r?'':'selected'}>${RS[0]}</option><option value="1" ${r?'selected':''}>${RS[1]}</option></select></div></div>
+<select class="dk ${r?'r1':'r0'}" data-a="rss"><option value="0" ${r?'':'selected'}>${RS[0]}</option><option value="1" ${r?'selected':''}>${RS[1]}</option></select>${tsH(p,'ra_soat_at')}</div>
+<div class="xc"><label class="tg mo"><input type="checkbox" data-a="chet" ${p.da_chet?'checked':''}> Đã chết</label>
+<select class="dk" data-a="chets"><option value="0" ${p.da_chet?'':'selected'}>Không</option><option value="1" ${p.da_chet?'selected':''}>Đã chết</option></select>${tsH(p,'chet_at')}</div></div>
 <button class="sm dk" data-a="qr">Sao chép QR</button>${open&&!nested?famHtml(p):''}</div>`};
-async function save(id,patch){const{error}=await sb.from('people').update(patch).eq('id',id);if(error){toast('Lỗi: '+error.message);return false}
+async function save(id,patch){const{data:ts,error}=await sb.from('people').update(patch).eq('id',id).select('kham_at,ra_soat_at,cong_tac_at,chet_at,updated_at').single();if(error){toast('Lỗi: '+error.message);return false}
+  if(rows[id]){Object.assign(rows[id],ts);refreshTs(id)}
   if(patch.noi_cong_tac&&!wps.includes(patch.noi_cong_tac)){await sb.from('workplaces').upsert({name:patch.noi_cong_tac},{onConflict:'name',ignoreDuplicates:true});wps.push(patch.noi_cong_tac);wps.sort();fillWp()}
   toast('Đã lưu ✓');return true}
 const draw=(id,foc)=>{if(!rows[id])return;document.querySelectorAll(`.card[data-id="${id}"]`).forEach(el=>{if(el.isConnected)el.outerHTML=card(rows[id],!!el.dataset.n)});
   if(foc){const w=document.querySelector(`.card[data-id="${id}"] .wp`);if(w&&w.offsetParent)w.focus()}};
-const bump=(a,b)=>{stat.k+=(!!b.da_kham)-(!!a.da_kham);stat.r+=(b.trang_thai_ra_soat==RS[1])-(a.trang_thai_ra_soat==RS[1]);showStats()};
+const bump=(a,b)=>{stat.k+=(!!b.da_kham)-(!!a.da_kham);stat.r+=(b.trang_thai_ra_soat==RS[1])-(a.trang_thai_ra_soat==RS[1]);stat.c+=(!!b.da_chet)-(!!a.da_chet);showStats()};
 async function upd(id,patch,foc){const old={...rows[id]};Object.assign(rows[id],patch);bump(old,rows[id]);draw(id,foc);if(!await save(id,patch)){rows[id]=old;draw(id);loadStats()}}
 const KHAM=v=>v?{da_kham:true,trang_thai_ra_soat:RS[1]}:{da_kham:false};   // đã khám => tự đã rà soát
 async function loadFam(id){const p=rows[id];if(!p||!p.so_hsct)return;
@@ -141,16 +159,26 @@ function toggle(id,nested){id=String(id);
 const qrText=p=>`${p.cccd}||${p.ho_ten}|${(p.ngay_sinh||'').split('-').reverse().join('')}|${p.gioi_tinh||''}|${stripAddr(p.thon)}${ADDR_SUFFIX}|`;
 const copy=async t=>{try{await navigator.clipboard.writeText(t);toast('Đã sao chép mã QR')}catch{prompt('Sao chép:',t)}};
 $('#list').addEventListener('click',e=>{const c=e.target.closest('.card');if(!c)return;const id=c.dataset.id,nested=!!c.dataset.n,b=e.target.closest('button[data-a]');
-  if(b){const a=b.dataset.a;if(a=='qr')copy(qrText(rows[id]));else if(a[0]=='k')upd(id,KHAM(a=='k1'));else if(a[0]=='r'){if(a=='r0'&&rows[id].da_kham)toast('Đã khám thì mặc định là đã rà soát');else upd(id,{trang_thai_ra_soat:RS[+(a=='r1')]})}return}
+  if(b){const a=b.dataset.a;if(a=='add')openDlg(id);else if(a=='qr')copy(qrText(rows[id]));else if(a[0]=='k')upd(id,KHAM(a=='k1'));else if(a[0]=='r'){if(a=='r0'&&rows[id].da_kham)toast('Đã khám thì mặc định là đã rà soát');else upd(id,{trang_thai_ra_soat:RS[+(a=='r1')]})}return}
   if(e.target.closest('input,select,label,button,.fam')&&!nested&&e.target.closest('.fam'))return;
   if(e.target.closest('input,select,label,button'))return;toggle(id,nested)});
 $('#list').addEventListener('change',e=>{const t=e.target,id=t.closest('.card').dataset.id,a=t.dataset.a;
   if(a=='ks')upd(id,KHAM(t.value=='1'));
+  else if(a=='chet'||a=='chets')upd(id,{da_chet:a=='chet'?t.checked:t.value=='1'});
   else if(a=='rss'){if(t.value=='0'&&rows[id].da_kham){toast('Đã khám thì mặc định là đã rà soát');draw(id)}else upd(id,{trang_thai_ra_soat:RS[+t.value]})}
   else if(a=='cty'||a=='ctys'){const v=a=='cty'?t.checked:t.value=='1';upd(id,v?{dang_lam_cty:true}:{dang_lam_cty:false,noi_cong_tac:null},v)}
   else if(t.classList.contains('wp')){const n=canon(t.value);t.value=n;rows[id].noi_cong_tac=n||null;save(id,{noi_cong_tac:n||null})}});
+let addFor=null;
+function openDlg(id){addFor=id;const p=rows[id];$('#dinfo').textContent=`Cùng hộ với ${p.ho_ten}${p.chu_ho?' · Chủ hộ: '+p.chu_ho:''}`;['#nh','#nd','#ng','#nc'].forEach(s=>$(s).value='');$('#dlg').hidden=false;$('#nh').focus()}
+const closeDlg=()=>{$('#dlg').hidden=true;addFor=null};$('#dx').onclick=closeDlg;
+$('#ds').onclick=async()=>{const b=rows[addFor],ho=$('#nh').value.trim().replace(/\s+/g,' '),cc=$('#nc').value.trim();
+  if(!ho)return toast('Nhập họ tên');if(cc&&!/^\d{12}$/.test(cc))return toast('CCCD gồm 12 chữ số');
+  const{data,error}=await sb.from('people').insert({ho_ten:ho,ngay_sinh:$('#nd').value||null,gioi_tinh:$('#ng').value||null,cccd:cc||null,so_hsct:b.so_hsct,chu_ho:b.chu_ho,thon:b.thon}).select().single();
+  if(error)return toast(error.code=='23505'?'CCCD này đã tồn tại':'Lỗi: '+error.message);
+  rows[data.id]=data;(fam[b.so_hsct]=fam[b.so_hsct]||[]).push(data.id);stat.t++;showStats();const id=addFor;closeDlg();draw(id);toast('Đã thêm đối tượng')};
 ['#q','#year'].forEach(s=>$(s).oninput=()=>{clearTimeout(timer);timer=setTimeout(search,300)});
-['#thon','#st','#rs'].forEach(s=>$(s).onchange=()=>search());$('#more').onclick=()=>search(false);
+$('#today').onclick=()=>{const t=new Date().toLocaleDateString('sv-SE');if(!$('#tf').value)$('#tf').value='ra_soat_at';$('#d1').value=$('#d2').value=t;search()};
+['#thon','#st','#rs','#tf','#d1','#d2'].forEach(s=>$(s).onchange=()=>search());$('#more').onclick=()=>search(false);
 document.querySelectorAll('.tab [data-t]').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab [data-t]').forEach(x=>x.classList.toggle('on',x==b));
   $('#ts').hidden=$('#vs').hidden=b.dataset.t!='s';$('#vi').hidden=b.dataset.t!='i'});
 // ---- nhập Excel
