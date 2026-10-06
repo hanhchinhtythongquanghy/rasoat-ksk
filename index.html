@@ -22,6 +22,30 @@ button{cursor:pointer}button.p{background:var(--p);border-color:var(--p);color:#
 .card.open{box-shadow:0 0 0 2px var(--p)}.card input,.card select,.card button,.card label{cursor:auto}.card button,.card select{cursor:pointer}
 .fam{margin-top:10px;display:flex;flex-direction:column;gap:6px;cursor:auto}.fam .card{padding:8px 10px}.fh{font-weight:600}
 .lg i{display:inline-block;width:10px;height:10px;border-radius:2px;margin:0 3px 0 8px;vertical-align:-1px}
+<!doctype html><html lang="vi"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>Rà soát khám sức khỏe</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root{--bg:#f4f6f8;--c:#fff;--t:#1d2733;--m:#6b7785;--p:#0b7a5b;--b:#dde3ea;--r:#c0392b;--bl:#2a6fdb;--am:#d98e04;
+--cols:minmax(170px,2fr) 96px 130px minmax(150px,1.5fr) 120px 150px minmax(150px,1.6fr) 130px 120px}
+@media(prefers-color-scheme:dark){:root{--bg:#12171c;--c:#1c242c;--t:#e8eef3;--m:#93a1ae;--p:#2bb58c;--b:#2c3742}}
+*{box-sizing:border-box}body{margin:0;font:16px system-ui,sans-serif;background:var(--bg);color:var(--t)}
+.w{max-width:960px;margin:auto;padding:10px}
+input,select,button{font:inherit;color:inherit;background:var(--c);border:1px solid var(--b);border-radius:10px;padding:10px 12px;min-height:44px}
+select option{background:var(--c);color:var(--t)}
+button{cursor:pointer}button.p{background:var(--p);border-color:var(--p);color:#fff}
+.bar{position:sticky;top:0;background:var(--bg);padding:8px 0;z-index:5}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.row>*{flex:1 1 120px}.row .s{flex:0 0 auto}
+.r1{flex-wrap:nowrap}.r1>input{min-width:0}#q{flex:3 1 0}#year{flex:1 1 0}
+.row.f{flex-wrap:nowrap}.row.f>select{flex:1 1 0;min-width:0;padding:10px 6px;text-overflow:ellipsis}
+#list{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));margin-top:6px}
+.card{background:var(--c);border:1px solid var(--b);border-left:6px solid var(--b);border-radius:14px;padding:12px;cursor:pointer}
+.card.sKR{background:rgba(43,181,140,.17);border-left-color:#2bb58c}
+.card.sR{background:rgba(42,111,219,.15);border-left-color:#2a6fdb}
+.card.open{box-shadow:0 0 0 2px var(--p)}.card input,.card select,.card button,.card label{cursor:auto}.card button,.card select{cursor:pointer}
+.fam{margin-top:10px;display:flex;flex-direction:column;gap:6px;cursor:auto}.fam .card{padding:8px 10px}.fh{font-weight:600}
+.lg i{display:inline-block;width:10px;height:10px;border-radius:2px;margin:0 3px 0 8px;vertical-align:-1px}
 .card h3{margin:0 0 2px;font-size:17px}.m{color:var(--m);font-size:14px}
 .dc{display:flex;justify-content:space-between;align-items:baseline;margin:2px 0}
 .dob{text-align:left}.cccd{text-align:right;font:600 17px ui-monospace,monospace;letter-spacing:.5px}
@@ -84,16 +108,21 @@ const canon=n=>{n=(n||'').trim().replace(/\s+/g,' ');return wps.find(x=>norm(x)=
 // ---- tra cứu
 async function search(reset=true){
   if(reset){page=0;$('#list').innerHTML='';rows={};fam={};openSet.clear()}
-  let q=sb.from('people').select('*').order('ho_ten').order('id').range(page*PAGE,page*PAGE+PAGE-1);
-  const t=norm($('#q').value).replace(/[%,()*]/g,'');
-  if(t)q=/^\d+$/.test(t)?q.ilike('cccd',`%${t}%`):q.ilike('search_key',`%${t}%`);
-  if($('#year').value)q=q.eq('nam_sinh',+$('#year').value);
-  if($('#thon').value)q=q.eq('thon',$('#thon').value);
-  if($('#st').value)q=q.eq('da_kham',$('#st').value=='1');
-  if($('#rs').value)q=q.eq('trang_thai_ra_soat',$('#rs').value);
-  const{data,error}=await q;if(error)return toast(error.message);
+  const raw=$('#q').value.trim(),nfc=raw.normalize('NFC').toLowerCase().replace(/\s+/g,' '),base=norm(raw),
+    plain=base.replace(/[%_\\,()*]/g,''),acc=!!plain&&!/^\d+$/.test(plain)&&base!==nfc;
+  const yr=$('#year').value?+$('#year').value:null,th=$('#thon').value||null,st=$('#st').value,rs=$('#rs').value||null;
+  let r;
+  if(acc&&plain.length>=3)   // gõ có dấu (từ 3 ký tự): khớp dấu xếp lên đầu
+    r=await sb.rpc('search_people',{p_q:plain,p_qa:vnCanon(nfc).replace(/[%_\\]/g,''),p_yr:yr,p_th:th,p_kh:st===''?null:st=='1',p_rs:rs,p_off:page*PAGE,p_lim:PAGE});
+  else{                      // không dấu: truy vấn trực tiếp như cũ (nhanh nhất)
+    let q=sb.from('people').select('*').order('ho_ten').order('id').range(page*PAGE,page*PAGE+PAGE-1);
+    if(plain)q=/^\d+$/.test(plain)?q.ilike('cccd',`%${plain}%`):q.ilike('search_key',`%${plain}%`);
+    if(yr)q=q.eq('nam_sinh',yr);if(th)q=q.eq('thon',th);if(st!=='')q=q.eq('da_kham',st=='1');if(rs)q=q.eq('trang_thai_ra_soat',rs);
+    r=await q}
+  const{data,error}=r;if(error)return toast(error.message);
   data.forEach(p=>{rows[p.id]=p;$('#list').insertAdjacentHTML('beforeend',card(p))});
   $('#more').hidden=data.length<PAGE;$('#info').textContent=Object.keys(rows).length?'':'Không tìm thấy';page++}
+const VP=[["oà", "òa"], ["oá", "óa"], ["oả", "ỏa"], ["oã", "õa"], ["oạ", "ọa"], ["oè", "òe"], ["oé", "óe"], ["oẻ", "ỏe"], ["oẽ", "õe"], ["oẹ", "ọe"], ["uỳ", "ùy"], ["uý", "úy"], ["uỷ", "ủy"], ["uỹ", "ũy"], ["uỵ", "ụy"]];const vnCanon=s=>VP.reduce((a,p)=>a.split(p[0]).join(p[1]),s);
 let openSet=new Set(),fam={},stat={t:0,k:0,r:0};
 const fmt=n=>n.toLocaleString('vi-VN');
 const showStats=()=>{const pc=n=>stat.t?Math.round(n*100/stat.t):0;$('#stat').innerHTML=`Tổng <b>${fmt(stat.t)}</b> · Khám <b>${fmt(stat.k)}</b> (${pc(stat.k)}%) · RS <b>${fmt(stat.r)}</b> (${pc(stat.r)}%)`};
@@ -172,6 +201,4 @@ $('#run').onclick=async()=>{$('#run').disabled=true;let ok=0;const add=$('#addne
   for(let i=0;i<recs.length;i+=CH){const{data,error}=await rpcRetry({rows:recs.slice(i,i+CH),add_new:add});
     if(error){$('#pr').textContent=`Lỗi ở dòng ${i+1}–${Math.min(i+CH,recs.length)}: ${error.message}. Bấm "Bắt đầu" để chạy lại, dữ liệu đã nạp sẽ không bị trùng.`;$('#run').disabled=false;return}
     ok+=data;$('#pr').textContent=`Đã xử lý ${Math.min(i+CH,recs.length)}/${recs.length}…`}
-  $('#pr').textContent=`Xong: khớp & cập nhật ${ok}/${recs.length} dòng.`+(ok<recs.length&&!add?' Dòng không khớp = CCCD chưa có trong CSDL.':'');
-  const{data:w}=await sb.from('workplaces').select('name').order('name').limit(5000);wps=(w||[]).map(x=>x.name);fillWp();loadStats();search()};
-</script></body></html>
+  $('#pr').textContent=`Xong: khớp & cập nhật ${ok}/${recs.length} dòng.`+(ok<recs.length&&!add?' Dòng không khớp = CCCD chưa có tr
