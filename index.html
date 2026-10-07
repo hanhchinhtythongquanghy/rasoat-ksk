@@ -22,8 +22,8 @@ button{cursor:pointer}button.p{background:var(--p);border-color:var(--p);color:#
 .card.open{box-shadow:0 0 0 2px var(--p)}.card input,.card select,.card button,.card label{cursor:auto}.card button,.card select{cursor:pointer}
 .card.sD{background:rgba(128,128,128,.2);border-left-color:#888}.card.sD>.nm h3{text-decoration:line-through;opacity:.75}
 .ts{font-size:12px;color:var(--m)}.ts:empty{display:none}.fh2{display:flex;justify-content:space-between;align-items:center}
-#dlg,#hdlg{position:fixed;inset:0;background:#000a;z-index:40;display:flex;align-items:center;justify-content:center;padding:12px}
-#dlg .box,#hdlg .box{background:var(--c);border-radius:14px;padding:16px;width:min(100%,420px);display:grid;gap:10px}#dlg .row{margin:0}
+#dlg,#hdlg,#pdlg{position:fixed;inset:0;background:#000a;z-index:40;display:flex;align-items:center;justify-content:center;padding:12px}
+#dlg .box,#hdlg .box,#pdlg .box{background:var(--c);border-radius:14px;padding:16px;width:min(100%,420px);display:grid;gap:10px}#dlg .row{margin:0}
 .fam{margin-top:10px;display:flex;flex-direction:column;gap:6px;cursor:auto}.fam .card{padding:8px 10px}.fh{font-weight:600}
 .lg i{display:inline-block;width:10px;height:10px;border-radius:2px;margin:0 3px 0 8px;vertical-align:-1px}
 .card h3{margin:0 0 2px;font-size:17px}.m{color:var(--m);font-size:14px}
@@ -39,6 +39,7 @@ button{cursor:pointer}button.p{background:var(--p);border-color:var(--p);color:#
 .tab{display:flex;gap:6px}.tab button{flex:1}.tab .on{background:var(--p);color:#fff}
 #hd{display:none}#toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#222;color:#fff;padding:8px 16px;border-radius:20px;opacity:0;transition:.3s;z-index:30}
 [hidden]{display:none!important}
+.mebar>span:last-child{white-space:nowrap}#res{display:flex;gap:10px;align-items:center;margin:6px 0 2px;font-size:14px}
 .mebar{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--m)}
 .lnk{color:var(--p);cursor:pointer;text-decoration:underline;background:none;border:0;padding:0 4px;min-height:0;font:inherit}
 .tab button{padding:8px 4px;font-size:14px}
@@ -67,12 +68,14 @@ button{cursor:pointer}button.p{background:var(--p);border-color:var(--p);color:#
 <div id="login" hidden><h2>Đăng nhập</h2><div class="row"><input id="em" type="email" placeholder="Email"><input id="pw" type="password" placeholder="Mật khẩu"><button class="p s" id="go">Đăng nhập</button></div><p id="le" class="m"></p></div>
 <div id="blocked" hidden><h2>Chưa được cấp quyền</h2><p class="m">Tài khoản của bạn chưa được cấp quyền hoặc đã bị khóa. Vui lòng liên hệ quản trị viên.</p><button id="out2">Đăng xuất</button></div>
 <div id="app" hidden>
-<div class="bar"><div class="mebar"><span id="me"></span><button class="lnk" id="out">Thoát</button></div>
+<div id="top"><div class="mebar"><span id="me"></span><span><button class="lnk" id="pwb">Đổi mật khẩu</button> <button class="lnk" id="out">Thoát</button></span></div>
 <div class="tab"><button class="on" data-t="s">Tra cứu</button><button class="adm" data-t="i" hidden>Nhập Excel</button><button class="adm" data-t="l" hidden>Nhật ký</button><button class="adm" data-t="u" hidden>Cán bộ</button></div>
-<div id="ts"><div class="row r1"><input id="q" type="search" placeholder="Tìm theo tên hoặc CCCD…" autocomplete="off"><input id="year" type="number" inputmode="numeric" placeholder="Năm sinh"></div>
+<div id="stat" class="m" style="font-size:13px;margin:4px 0"></div></div>
+<div id="ts" class="bar"><div class="row r1"><input id="q" type="search" placeholder="Tìm theo tên hoặc CCCD…" autocomplete="off"><input id="year" type="number" inputmode="numeric" placeholder="Năm sinh"></div>
 <div class="row f"><select id="thon"><option value="">Tất cả thôn</option></select><select id="st"><option value="">Tình trạng: tất cả</option><option value="1">Đã khám</option><option value="0">Chưa khám</option><option value="x">Đã chết</option><option value="v">Đi vắng</option><option value="s">Sinh viên</option><option value="c">Làm cty/cơ quan</option></select><select id="rs"></select></div>
-<div class="row tf dk"><select id="tf"><option value="">Lọc theo thời gian cập nhật…</option><option value="ra_soat_at">Rà soát</option><option value="kham_at">Khám</option><option value="cong_tac_at">Công ty / nơi công tác</option><option value="chet_at">Đã chết</option><option value="di_vang_at">Đi vắng</option><option value="sinh_vien_at">Sinh viên</option><option value="updated_at">Bất kỳ thông tin nào</option></select><input type="date" id="d1" title="Từ ngày"><input type="date" id="d2" title="Đến ngày"><button class="s" id="today">Hôm nay</button><b id="cnt" class="s"></b></div><div id="stat" class="m" style="margin-top:6px;font-size:13px"></div></div></div>
+<div class="row tf dk"><select id="tf"><option value="">Lọc theo thời gian cập nhật…</option><option value="ra_soat_at">Rà soát</option><option value="kham_at">Khám</option><option value="cong_tac_at">Công ty / nơi công tác</option><option value="chet_at">Đã chết</option><option value="di_vang_at">Đi vắng</option><option value="sinh_vien_at">Sinh viên</option><option value="updated_at">Bất kỳ thông tin nào</option></select><input type="date" id="d1" title="Từ ngày"><input type="date" id="d2" title="Đến ngày"><button class="s" id="today">Hôm nay</button></div></div>
 <div id="vs"><div class="m lg" style="font-size:12px;margin:6px 0"><i style="background:#2bb58c"></i>Đã khám (gồm đã RS)<i style="background:#f76707"></i>Đã RS, chưa khám<i style="background:#888"></i>Đã chết · RS = rà soát</div><div id="hd"><span>Họ tên</span><span>Ngày sinh</span><span>CCCD</span><span>Giới tính · Thôn</span><span>Tình trạng khám</span><span>Công ty / cơ quan</span><span>Nơi công tác</span><span>Rà soát</span><span>Đi vắng</span><span>Sinh viên</span><span>Đã chết</span><span>Mã QR</span></div>
+<div id="res" hidden><b id="cnt"></b><button class="sm adm" id="xls" hidden>⬇ Xuất Excel</button></div>
 <div id="list"></div><p id="info" class="m"></p><div class="row"><button id="more" hidden>Xem thêm</button></div></div>
 <div id="vi" hidden><div class="card" style="display:block"><h3>Cập nhật hàng loạt từ Excel (đối chiếu theo CCCD)</h3>
 <p class="m">Dùng đúng mẫu cột: CCCD, Tình trạng khám, Nơi khám, Đang làm công ty, Nơi công tác, Nhóm đối tượng, Trạng thái rà soát, Đi vắng, Sinh viên. Ô trống = giữ nguyên dữ liệu cũ.</p>
@@ -86,9 +89,11 @@ button{cursor:pointer}button.p{background:var(--p);border-color:var(--p);color:#
 <div class="row"><input id="ue" type="email" placeholder="Email tài khoản"><input id="un" placeholder="Họ tên cán bộ"><select id="ur"><option value="can_bo">Cán bộ</option><option value="admin">Quản trị</option></select><button class="p s" id="uadd">Thêm</button></div></div></div>
 </div></div><div id="dlg" hidden><div class="box"><h3 style="margin:0">Thêm đối tượng cùng hộ</h3><div class="m" id="dinfo"></div>
 <input id="nh" placeholder="Họ và tên *"><div class="row"><input id="nd" type="date" title="Ngày sinh"><select id="ng"><option value="">Giới tính</option><option>Nam</option><option>Nữ</option></select></div>
-<input id="nc" inputmode="numeric" maxlength="12" placeholder="CCCD (12 số, có thể để trống)"><div class="row"><button id="dx">Hủy</button><button class="p" id="ds">Lưu</button></div></div></div><div id="hdlg" hidden><div class="box"><h3 style="margin:0" id="htl"></h3><div id="hbody" style="max-height:60vh;overflow:auto"></div><button id="hx">Đóng</button></div></div>
+<input id="nc" inputmode="numeric" maxlength="12" placeholder="CCCD (12 số, có thể để trống)"><div class="row"><button id="dx">Hủy</button><button class="p" id="ds">Lưu</button></div></div></div><div id="pdlg" hidden><div class="box"><h3 style="margin:0">Đổi mật khẩu</h3><input id="p1" type="password" placeholder="Mật khẩu mới (ít nhất 6 ký tự)" autocomplete="new-password"><input id="p2" type="password" placeholder="Nhập lại mật khẩu mới" autocomplete="new-password"><div class="row"><button id="px">Hủy</button><button class="p" id="ps">Lưu</button></div></div></div>
+<div id="hdlg" hidden><div class="box"><h3 style="margin:0" id="htl"></h3><div id="hbody" style="max-height:60vh;overflow:auto"></div><button id="hx">Đóng</button></div></div>
 <div id="undo" hidden><span>Đã lưu ✓</span><button id="ubt">Hoàn tác</button></div><div id="toast"></div>
 <script>
+const SUPABASE_URL='https://YOUR-PROJECT.supabase.co',SUPABASE_KEY='YOUR-ANON-KEY';
 const SUPABASE_URL='https://smozxcfjfzouhcxvgcdp.supabase.co',SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNtb3p4Y2ZqZnpvdWhjeHZnY2RwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcyOTY4MTEsImV4cCI6MjEwMjg3MjgxMX0.W2aZAQTalUeRib4B3dHRvzv0i-7RakwbQkPz2qYdeBs';
 const ADDR_SUFFIX=', xã Hồng Quang, tỉnh Hưng Yên';   // nối vào thôn khi tạo mã QR giả lập
 const RS=['Chưa rà soát','Đã rà soát'];
@@ -99,27 +104,37 @@ const dmy=d=>d?d.split('-').reverse().join('/'):'';const esc=s=>(s||'').replace(
 const toast=m=>{const t=$('#toast');t.textContent=m;t.style.opacity=1;clearTimeout(t.h);t.h=setTimeout(()=>t.style.opacity=0,1800)};
 let page=0,rows={},wps=[],timer;
 // ---- đăng nhập
-$('#go').onclick=async()=>{const{error}=await sb.auth.signInWithPassword({email:$('#em').value,password:$('#pw').value});if(error)$('#le').textContent='Sai email hoặc mật khẩu'};
-$('#out').onclick=$('#out2').onclick=()=>sb.auth.signOut();
+let reloading=false,doReload=()=>location.reload();
+$('#go').onclick=async()=>{const{error}=await sb.auth.signInWithPassword({email:$('#em').value,password:$('#pw').value});if(error)$('#le').textContent='Sai email hoặc mật khẩu';else{reloading=true;doReload()}};
+$('#out').onclick=$('#out2').onclick=async()=>{reloading=true;await sb.auth.signOut();doReload()};
 let curUid=null,me=null;
 sb.auth.onAuthStateChange((_,s)=>{
-  if(!s){curUid=null;me=null;$('#login').hidden=false;$('#app').hidden=true;$('#blocked').hidden=true;return}
+  if(reloading)return;
+  if(!s){if(curUid){reloading=true;doReload();return}me=null;$('#login').hidden=false;$('#app').hidden=true;$('#blocked').hidden=true;return}
   if(s.user.id===curUid)return;curUid=s.user.id;$('#login').hidden=true;start(s.user)});
 async function start(u){
   const{data}=await sb.from('nguoi_dung').select('*').eq('id',u.id).maybeSingle();
   if(!data||!data.hoat_dong){$('#app').hidden=true;$('#blocked').hidden=false;return}
   me=data;$('#blocked').hidden=true;$('#app').hidden=false;
   $('#me').textContent='👤 '+me.ho_ten+(me.vai_tro=='admin'?' · Quản trị':'');
-  document.querySelectorAll('.adm').forEach(e=>e.hidden=me.vai_tro!='admin');init()}
+  document.querySelectorAll('.adm').forEach(e=>e.hidden=me.vai_tro!='admin');$('.tab').hidden=me.vai_tro!='admin';init()}
 async function init(){
   loadStats();
   $('#rs').innerHTML='<option value="">Rà soát: tất cả</option>'+RS.map(x=>`<option>${x}</option>`).join('');
-  const{data:t}=await sb.rpc('list_thons');$('#thon').innerHTML='<option value="">Tất cả thôn</option>'+(t||[]).map(x=>`<option>${esc(x)}</option>`).join('');
+  const{data:t}=await sb.rpc('list_thons');const keepT=$('#thon').value;$('#thon').innerHTML='<option value="">Tất cả thôn</option>'+(t||[]).map(x=>`<option>${esc(x)}</option>`).join('');$('#thon').value=keepT;
   const{data:w}=await sb.from('workplaces').select('name').order('name').limit(5000);wps=(w||[]).map(x=>x.name);fillWp();search();}
 const fillWp=()=>{let d=$('#wpl');if(!d){d=document.createElement('datalist');d.id='wpl';document.body.append(d)}d.innerHTML=wps.map(x=>`<option value="${esc(x)}">`).join('')};
 const canon=n=>{n=(n||'').trim().replace(/\s+/g,' ');return wps.find(x=>norm(x)==norm(n))||n};
+$('#pwb').onclick=()=>{$('#p1').value=$('#p2').value='';$('#pdlg').hidden=false;$('#p1').focus()};
+$('#px').onclick=()=>$('#pdlg').hidden=true;
+$('#ps').onclick=async()=>{const a=$('#p1').value;if(a.length<6)return toast('Mật khẩu ít nhất 6 ký tự');if(a!==$('#p2').value)return toast('Hai ô mật khẩu chưa giống nhau');
+  const{error}=await sb.auth.updateUser({password:a});if(error)return toast('Lỗi: '+error.message);$('#pdlg').hidden=true;toast('Đã đổi mật khẩu ✓')};
 // ---- tra cứu
+let seq=0,lastArgs={},resF=false;
+function setRes(n,f){resF=f;const adm=me&&me.vai_tro=='admin';$('#res').hidden=!(f||adm);
+  $('#cnt').textContent=n==null?'':(f?`Kết quả: ${fmt(n)} người`:`Toàn xã: ${fmt(n)} người`);$('#xls').textContent=f?'⬇ Xuất danh sách lọc':'⬇ Xuất toàn xã'}
 async function search(reset=true){
+  const my=++seq;
   if(reset){page=0;$('#list').innerHTML='';rows={};fam={};openSet.clear()}
   const raw=$('#q').value.trim(),nfc=raw.normalize('NFC').toLowerCase().replace(/\s+/g,' '),base=norm(raw),
     plain=base.replace(/[%_\\,()*]/g,''),acc=!!plain&&!/^\d+$/.test(plain)&&base!==nfc;
@@ -128,8 +143,10 @@ async function search(reset=true){
   let t1=null,t2=null;if(tf){const d1=$('#d1').value,d2=$('#d2').value||d1;if(d1)t1=new Date(d1+'T00:00:00').toISOString();if(d2)t2=new Date(d2+'T23:59:59.999').toISOString()}
   const f={p_yr:yr,p_th:th,p_kh:kh,p_rs:rs,p_flag:FL[st]||null,p_tf:tf||null,p_t1:t1,p_t2:t2};
   const r=await sb.rpc('search_people',{p_q:plain,p_qa:acc&&plain.length>=3&&!tf?vnCanon(nfc).replace(/[%_\\]/g,''):'',...f,p_off:page*PAGE,p_lim:PAGE});
-  if(!tf)$('#cnt').textContent='';
-  else if(page==0)sb.rpc('dem_people',{p_q:plain,...f}).then(c=>{$('#cnt').textContent=c.error?'':`${fmt(c.data)} người`});
+  if(my!==seq)return;   // đã có lần tìm mới hơn, bỏ kết quả cũ
+  lastArgs={p_q:plain,...f};
+  if(page==0){const filt=!!(plain||yr||th||st!==''||rs||tf);
+    if(filt)sb.rpc('dem_people',lastArgs).then(c=>{if(my===seq)setRes(c.error?null:c.data,true)});else setRes(stat.t,false)}
   const{data,error}=r;if(error)return toast(error.message);
   data.forEach(p=>{rows[p.id]=p;$('#list').insertAdjacentHTML('beforeend',card(p))});
   $('#more').hidden=data.length<PAGE;$('#info').textContent=Object.keys(rows).length?'':'Không tìm thấy';page++}
@@ -138,7 +155,7 @@ let openSet=new Set(),fam={},stat={t:0,k:0,r:0,c:0};
 const fmt=n=>n.toLocaleString('vi-VN');
 const showStats=()=>{const pc=n=>stat.t?Math.round(n*100/stat.t):0;$('#stat').innerHTML=`Tổng <b>${fmt(stat.t)}</b> · Khám <b>${fmt(stat.k)}</b> (${pc(stat.k)}%) · RS <b>${fmt(stat.r)}</b> (${pc(stat.r)}%) · Chết <b>${fmt(stat.c)}</b>`};
 async function loadStats(){const c=q=>q.then(r=>r.count||0),T=()=>sb.from('people').select('id',{count:'exact',head:true});
-  const[t,k,r,x]=await Promise.all([c(T()),c(T().eq('da_kham',true)),c(T().eq('trang_thai_ra_soat',RS[1])),c(T().eq('da_chet',true))]);stat={t,k,r,c:x};showStats()}
+  const[t,k,r,x]=await Promise.all([c(T()),c(T().eq('da_kham',true)),c(T().eq('trang_thai_ra_soat',RS[1])),c(T().eq('da_chet',true))]);stat={t,k,r,c:x};showStats();if(!resF)setRes(stat.t,false)}
 const fts=t=>{if(!t)return'';const d=new Date(t),z=n=>String(n).padStart(2,'0');return `${z(d.getDate())}/${z(d.getMonth()+1)} ${z(d.getHours())}:${z(d.getMinutes())}`};
 const tsH=(p,f)=>`<div class="m ts" data-ts="${f}">${p[f]?'cập nhật '+fts(p[f]):''}</div>`;
 const byT=p=>p.sua_boi_ten?`Sửa: ${p.sua_boi_ten} · ${fts(p.updated_at)}`:'';
@@ -219,10 +236,24 @@ const VW={s:['#ts','#vs'],i:['#vi'],l:['#vl'],u:['#vu']};
 document.querySelectorAll('.tab [data-t]').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab [data-t]').forEach(x=>x.classList.toggle('on',x==b));
   Object.entries(VW).forEach(([k,v])=>v.forEach(s=>$(s).hidden=k!=b.dataset.t));
   if(b.dataset.t=='l')loadLog();if(b.dataset.t=='u')loadUsers()});
+// ---- xuất Excel (quản trị)
+const fdt=t=>{if(!t)return'';const d=new Date(t),z=n=>String(n).padStart(2,'0');return `${z(d.getDate())}/${z(d.getMonth()+1)}/${d.getFullYear()} ${z(d.getHours())}:${z(d.getMinutes())}`};
+const fdesc=()=>{const o=s=>$(s).selectedOptions[0].text,p=[];if($('#q').value.trim())p.push('tìm "'+$('#q').value.trim()+'"');if($('#year').value)p.push('sinh '+$('#year').value);
+  if($('#thon').value)p.push($('#thon').value);if($('#st').value)p.push(o('#st'));if($('#rs').value)p.push($('#rs').value);if($('#tf').value)p.push(o('#tf')+' '+($('#d1').value||'')+'→'+($('#d2').value||$('#d1').value||''));return p.join(', ')};
+const XH=['STT','Họ và tên','Ngày sinh','Giới tính','CCCD','Họ và tên chủ hộ','Số HSCT','Nơi thường trú','Nhóm đối tượng','Tình trạng khám','Nơi khám','Đang làm công ty','Nơi công tác','Trạng thái rà soát','Đi vắng','Sinh viên','Đã chết','Cập nhật lần cuối bởi','Cập nhật lúc'];
+const yk=v=>v?'Có':'Không';
+$('#xls').onclick=async()=>{const b=$('#xls'),lab=b.textContent,all=[];b.disabled=true;
+  try{for(let off=0;;off+=1000){const{data,error}=await sb.rpc('search_people',{...lastArgs,p_qa:'',p_off:off,p_lim:1000});if(error)throw error;all.push(...data);b.textContent=`Đang xuất… ${fmt(all.length)}`;if(data.length<1000)break}
+    const aoa=[XH,...all.map((p,i)=>[i+1,p.ho_ten,dmy(p.ngay_sinh),p.gioi_tinh||'',p.cccd||'',p.chu_ho||'',p.so_hsct||'',stripAddr(p.thon),p.nhom_doi_tuong||'',p.da_kham?'Đã khám':'Chưa khám',p.noi_kham||'',yk(p.dang_lam_cty),p.noi_cong_tac||'',p.trang_thai_ra_soat||'',yk(p.di_vang),yk(p.sinh_vien),yk(p.da_chet),p.sua_boi_ten||'',fdt(p.updated_at)])];
+    const ws=XLSX.utils.aoa_to_sheet(aoa);ws['!cols']=XH.map((_,i)=>({wch:[5,26,11,9,15,24,9,18,14,12,16,12,22,14,9,10,9,20,16][i]}));
+    const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Nhân khẩu');
+    XLSX.writeFile(wb,`${resF?'danh-sach-loc':'nhan-khau-toan-xa'}-${today()}.xlsx`);
+    sb.rpc('ghi_xuat',{p_mo_ta:resF?'Danh sách lọc: '+fdesc():'Toàn xã',p_so:all.length});toast(`Đã xuất ${fmt(all.length)} người`)}
+  catch(e){toast('Lỗi xuất: '+(e.message||e))}finally{b.disabled=false;b.textContent=lab}};
 // ---- lịch sử thay đổi, nhật ký, cán bộ
 const LB={da_kham:'Khám',trang_thai_ra_soat:'Rà soát',dang_lam_cty:'Làm cty/cơ quan',noi_cong_tac:'Nơi công tác',di_vang:'Đi vắng',sinh_vien:'Sinh viên',da_chet:'Đã chết',noi_kham:'Nơi khám',nhom_doi_tuong:'Nhóm đối tượng',ho_ten:'Họ tên',ngay_sinh:'Ngày sinh',gioi_tinh:'Giới tính',cccd:'CCCD',chu_ho:'Chủ hộ',so_hsct:'Số hộ',thon:'Thôn',stt:'STT'};
 const val=v=>v==null||v===''?'(trống)':v=='true'?'Có':v=='false'?'Không':v;
-const logLine=x=>x.hanh_dong=='them'?'Thêm mới':x.hanh_dong=='xoa'?'Xóa':`${LB[x.truong]||esc(x.truong)}: ${esc(val(x.cu))} → ${esc(val(x.moi))}`;
+const logLine=x=>x.hanh_dong=='xuat'?'Xuất Excel: '+esc(x.moi):x.hanh_dong=='them'?'Thêm mới':x.hanh_dong=='xoa'?'Xóa':`${LB[x.truong]||esc(x.truong)}: ${esc(val(x.cu))} → ${esc(val(x.moi))}`;
 async function openHist(id){const p=rows[id];$('#htl').textContent='Lịch sử: '+p.ho_ten;$('#hbody').innerHTML='Đang tải…';$('#hdlg').hidden=false;
   const{data,error}=await sb.from('nhat_ky').select('*').eq('person_id',id).order('luc',{ascending:false}).order('id',{ascending:false}).limit(40);
   $('#hbody').innerHTML=error?esc(error.message):data.length?data.map(x=>`<div class="lrow"><b>${esc(x.ten_nguoi)}</b> · ${fts(x.luc)}<br>${logLine(x)}</div>`).join(''):'Chưa có thay đổi nào được ghi lại'}
@@ -237,7 +268,7 @@ async function loadLog(reset=true){
   let q=sb.from('nhat_ky').select('*').gte('luc',from).lte('luc',to).order('luc',{ascending:false}).order('id',{ascending:false}).range(lpage*LP,lpage*LP+LP-1);
   if($('#lw').value)q=q.eq('nguoi',$('#lw').value);
   const{data,error}=await q;if(error)return toast(error.message);
-  $('#llist').insertAdjacentHTML('beforeend',data.map(x=>`<div class="lrow"><b>${esc(x.ten_nguoi)}</b> · ${fts(x.luc)}<br>${esc(x.ten_doi_tuong)} — ${logLine(x)}${x.hanh_dong=='sua'?` <button class="sm" data-lid="${x.id}">Hoàn tác</button>`:''}</div>`).join(''));
+  $('#llist').insertAdjacentHTML('beforeend',data.map(x=>`<div class="lrow"><b>${esc(x.ten_nguoi)}</b> · ${fts(x.luc)}<br>${x.ten_doi_tuong?esc(x.ten_doi_tuong)+' — ':''}${logLine(x)}${x.hanh_dong=='sua'?` <button class="sm" data-lid="${x.id}">Hoàn tác</button>`:''}</div>`).join(''));
   $('#lmore').hidden=data.length<LP;lpage++}
 $('#lgo').onclick=()=>loadLog();$('#lmore').onclick=()=>loadLog(false);
 $('#llist').addEventListener('click',async e=>{const b=e.target.closest('[data-lid]');if(!b||!confirm('Hoàn tác thay đổi này (đưa về giá trị cũ)?'))return;
