@@ -4,7 +4,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 :root{--bg:#f4f6f8;--c:#fff;--t:#1d2733;--m:#6b7785;--p:#0b7a5b;--b:#dde3ea;--r:#c0392b;--or:#f76707;--sl:#64748b;
---cols:minmax(140px,2fr) 86px 118px minmax(110px,1.2fr) 108px 122px 104px 150px minmax(110px,1.4fr) 124px 104px 104px 104px}
+--cols:minmax(140px,2fr) 84px 112px minmax(90px,1fr) 60px 60px 60px 60px minmax(110px,1.4fr) 60px 60px 60px 92px}
 @media(prefers-color-scheme:dark){:root{--bg:#12171c;--c:#1c242c;--t:#e8eef3;--m:#93a1ae;--p:#2bb58c;--b:#2c3742}}
 *{box-sizing:border-box}body{margin:0;font:16px system-ui,sans-serif;background:var(--bg);color:var(--t)}
 .w{max-width:960px;margin:auto;padding:10px}
@@ -51,39 +51,41 @@ button{cursor:pointer}button.p{background:var(--p);border-color:var(--p);color:#
 .lrow{background:var(--c);border:1px solid var(--b);border-radius:10px;padding:8px 10px;margin-top:6px;font-size:14px}.lrow .sm{margin:4px 4px 0 0}
 #undo{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#222;color:#fff;padding:6px 8px 6px 16px;border-radius:24px;z-index:31;display:flex;gap:10px;align-items:center}
 #undo button{background:#f76707;color:#fff;border:0;border-radius:16px;min-height:34px;padding:4px 14px}
-@media(max-width:819px){.dk{display:none!important}
+@media(max-width:1199px){.dk{display:none!important}
 .ctl{display:flex;flex-direction:column;border-top:1px dashed var(--b);margin-top:8px}.card:not(.open) .ctl{display:none}
 .g1,.g2{display:flex;flex-wrap:wrap;gap:0 18px;align-items:center}.g1 .ts,.g2 .ts{display:none}.kd:empty{display:none}.by2{margin-top:6px}}
-@media(min-width:820px){
-.mo{display:none!important}.w{max-width:1800px}.fam{grid-column:1/-1;margin:4px 0 0 10px}
-#list{grid-template-columns:1fr;gap:6px}#hd{display:none}
-.card{display:grid;grid-template-columns:minmax(0,2fr) 100px 135px minmax(0,1.5fr) auto;gap:6px 10px;align-items:center;padding:8px 12px;border-radius:10px}
-.dc{display:contents}.cccd{font-size:15px;text-align:left}
-.ctl{display:flex;flex-wrap:wrap;gap:8px;grid-column:1/-1;grid-row:2;align-items:flex-start}.g1,.g2{display:contents}
-.ctl>div,.g1>div,.g2>div{flex:0 1 150px;min-width:0}.kd:empty{display:none}.ctl>.wp{flex:1 1 200px;max-width:320px}
-.qrb{grid-column:5;grid-row:1;white-space:nowrap;font-size:13px}
-.card h3{font-size:15px;margin:0}.card select,.card input.wp{min-height:38px;padding:6px 8px}
-.wp:disabled{display:block;opacity:.4}.row.f>select{flex:0 1 220px}.tf{max-width:900px}}
-@media(min-width:1700px){
-#hd,.card{grid-template-columns:var(--cols);gap:10px}
-#hd{display:grid;padding:0 12px 0 18px;margin-top:8px;color:var(--m);font-size:13px;font-weight:600;align-items:center}
-.ctl{display:contents}.kd:empty{display:block}.qrb{grid-column:auto;grid-row:auto}}
+.mebar label{margin-right:12px;cursor:pointer}
+#hd{display:none}
+@media(min-width:1200px){
+.sub .mo,.by2.mo,#st{display:none!important}.w{max-width:1800px}
+#list{grid-template-columns:1fr;gap:4px}
+#hd,.card.row{display:grid;grid-template-columns:var(--cols);gap:6px;align-items:center}
+#hd{padding:6px 13px 4px 18px;font-size:12px;font-weight:600;color:var(--m);text-align:center;line-height:1.15;border-bottom:1px solid var(--b);margin-top:6px}
+#hd span:nth-child(-n+4),#hd span:nth-child(9){text-align:left}
+.card.row{padding:5px 12px;border-radius:8px}.card.row h3{font-size:15px;margin:0}.card.row .m{font-size:13px}
+.card.row .cccd{font-size:14px;text-align:left}.card.row .dob{font-size:14px}
+.ck{display:flex;justify-content:center}.ck input{width:20px;height:20px;min-height:0}
+.card.row input.wp{width:100%;min-height:32px;padding:4px 8px}.wp:disabled{display:block;opacity:.4}
+.card.row .qrb{white-space:nowrap;font-size:13px;padding:4px 6px;min-height:32px}
+.xi{grid-column:1/-1;display:none;font-size:12px;color:var(--m)}body.mi .xi{display:block}
+.card.row .fam{grid-column:1/-1;margin:4px -13px 0 -18px}.fh2{padding:0 18px}
+.row.f>select{flex:0 1 220px}.tf{max-width:900px}}
 </style></head><body><div class="w">
 <div id="login" hidden><h2>Đăng nhập</h2><div class="row"><input id="em" type="email" placeholder="Email"><input id="pw" type="password" placeholder="Mật khẩu"><button class="p s" id="go">Đăng nhập</button></div><p id="le" class="m"></p></div>
 <div id="blocked" hidden><h2>Chưa được cấp quyền</h2><p class="m">Tài khoản của bạn chưa được cấp quyền hoặc đã bị khóa. Vui lòng liên hệ quản trị viên.</p><button id="out2">Đăng xuất</button></div>
 <div id="app" hidden>
-<div id="top"><div class="mebar"><span id="me"></span><span><button class="lnk" id="pwb">Đổi mật khẩu</button> <button class="lnk" id="out">Thoát</button></span></div>
+<div id="top"><div class="mebar"><span id="me"></span><span><label class="dk"><input type="checkbox" id="mi"> Xem thêm thông tin</label><button class="lnk" id="pwb">Đổi mật khẩu</button> <button class="lnk" id="out">Thoát</button></span></div>
 <div class="tab"><button class="on" data-t="s">Tra cứu</button><button class="adm" data-t="i" hidden>Nhập Excel</button><button class="adm" data-t="l" hidden>Nhật ký</button><button class="adm" data-t="u" hidden>Cán bộ</button></div>
 <div id="stat" class="m" style="font-size:13px;margin:4px 0"></div></div>
 <div id="ts" class="bar"><div class="row r1"><input id="q" type="search" placeholder="Tìm theo tên hoặc CCCD…" autocomplete="off"><input id="year" type="number" inputmode="numeric" placeholder="Năm sinh"></div>
-<div class="row f"><select id="thon"><option value="">Tất cả thôn</option></select><select id="st" class="mo"><option value="">Tình trạng: tất cả</option><option value="1">Đã khám</option><option value="0">Chưa khám</option><option value="x">Đã chết</option><option value="v">Đi vắng</option><option value="s">Sinh viên</option><option value="c">Làm cty/cơ quan</option><option value="k">Trẻ không đi học</option><option value="m">Thiếu CCCD</option></select><select id="rs"></select></div>
-<div class="row f dk"><select id="kh"><option value="">Khám: tất cả</option><option value="1">Đã khám</option><option value="0">Chưa khám</option></select>
-<div class="ms" id="ms"><button type="button" id="msb">Tình trạng khác ▾</button><div id="msp" hidden>
+<div class="row f"><select id="thon"><option value="">Tất cả thôn</option></select><select id="st" class="mo"><option value="">Tình trạng: tất cả</option><option value="1">Đã khám</option><option value="0">Chưa khám</option><option value="x">Đã chết</option><option value="v">Đi vắng</option><option value="s">Sinh viên</option><option value="c">Làm cty/cơ quan</option><option value="k">Trẻ không đi học</option><option value="m">Thiếu CCCD</option></select><select id="rs"></select><select id="kh" class="dk"><option value="">Khám: tất cả</option><option value="1">Đã khám</option><option value="0">Chưa khám</option></select>
+<div class="ms dk" id="ms"><button type="button" id="msb">Tình trạng khác ▾</button><div id="msp" hidden>
 <label><input type="checkbox" value="dang_lam_cty"> Làm cty/cơ quan</label><label><input type="checkbox" value="di_vang"> Đi vắng</label><label><input type="checkbox" value="khong_di_hoc"> Trẻ không đi học</label><label><input type="checkbox" value="sinh_vien"> Sinh viên</label><label><input type="checkbox" value="da_chet"> Đã chết</label>
 <label class="all"><input type="checkbox" id="msall"> Phải có đủ tất cả các mục đã chọn</label></div></div>
-<select id="cc"><option value="">CCCD: tất cả</option><option value="1">Thiếu CCCD</option></select></div>
-<div class="row tf dk"><select id="tf"><option value="">Lọc theo thời gian cập nhật…</option><option value="ra_soat_at">Rà soát</option><option value="kham_at">Khám</option><option value="cong_tac_at">Công ty / nơi công tác</option><option value="chet_at">Đã chết</option><option value="di_vang_at">Đi vắng</option><option value="sinh_vien_at">Sinh viên</option><option value="khong_di_hoc_at">Trẻ không đi học</option><option value="updated_at">Bất kỳ thông tin nào</option></select><input type="date" id="d1" title="Từ ngày"><input type="date" id="d2" title="Đến ngày"><button class="s" id="today">Hôm nay</button></div></div>
-<div id="vs"><div class="m lg" style="font-size:12px;margin:6px 0"><i style="background:#2bb58c"></i>Đã khám (gồm đã RS)<i style="background:#f76707"></i>Đã RS, chưa khám<i style="background:#888"></i>Đã chết · RS = rà soát</div><div id="hd"><span>Họ tên</span><span>Ngày sinh</span><span>CCCD</span><span>Giới tính · Thôn</span><span>Tình trạng khám</span><span>Rà soát</span><span>Đi vắng</span><span>Công ty / cơ quan</span><span>Nơi công tác</span><span>Trẻ không đi học</span><span>Sinh viên</span><span>Đã chết</span><span>Mã QR</span></div>
+<select id="cc" class="dk"><option value="">CCCD: tất cả</option><option value="1">Thiếu CCCD</option></select></div>
+<div class="row tf dk"><select id="tf"><option value="">Lọc theo thời gian cập nhật…</option><option value="ra_soat_at">Rà soát</option><option value="kham_at">Khám</option><option value="cong_tac_at">Công ty / nơi công tác</option><option value="chet_at">Đã chết</option><option value="di_vang_at">Đi vắng</option><option value="sinh_vien_at">Sinh viên</option><option value="khong_di_hoc_at">Trẻ không đi học</option><option value="updated_at">Bất kỳ thông tin nào</option></select><input type="date" id="d1" title="Từ ngày"><input type="date" id="d2" title="Đến ngày"><button class="s" id="today">Hôm nay</button></div>
+<div id="hd" class="dk"><span>Họ tên</span><span>Ngày sinh</span><span>CCCD</span><span>Giới tính · Thôn</span><span>Đã khám</span><span>Đã rà soát</span><span>Đi vắng</span><span>Làm cty / cơ quan</span><span>Nơi công tác</span><span>Không đi học</span><span>Sinh viên</span><span>Đã chết</span><span></span></div></div>
+<div id="vs"><div class="m lg" style="font-size:12px;margin:6px 0"><i style="background:#2bb58c"></i>Đã khám (gồm đã RS)<i style="background:#f76707"></i>Đã RS, chưa khám<i style="background:#888"></i>Đã chết · RS = rà soát</div>
 <div id="res" hidden><b id="cnt"></b><button class="sm adm" id="xls" hidden>⬇ Xuất Excel</button></div>
 <div id="list"></div><p id="info" class="m"></p><div class="row"><button id="more" hidden>Xem thêm</button></div></div>
 <div id="vi" hidden><div class="card" style="display:block"><h3>Cập nhật hàng loạt từ Excel (đối chiếu theo CCCD)</h3>
@@ -134,13 +136,17 @@ async function init(){
   const{data:w}=await sb.from('workplaces').select('name').order('name').limit(5000);wps=(w||[]).map(x=>x.name);fillWp();search();}
 const fillWp=()=>{let d=$('#wpl');if(!d){d=document.createElement('datalist');d.id='wpl';document.body.append(d)}d.innerHTML=wps.map(x=>`<option value="${esc(x)}">`).join('')};
 const canon=n=>{n=(n||'').trim().replace(/\s+/g,' ');return wps.find(x=>norm(x)==norm(n))||n};
+try{$('#mi').checked=localStorage.getItem('mi')=='1'}catch(e){}
+const applyMi=()=>{document.body.classList.toggle('mi',$('#mi').checked);try{localStorage.setItem('mi',$('#mi').checked?'1':'0')}catch(e){}};
+$('#mi').onchange=applyMi;applyMi();
+try{matchMedia('(min-width:1200px)').addEventListener('change',()=>{if(me)search()})}catch(e){}
 $('#pwb').onclick=()=>{$('#p1').value=$('#p2').value='';$('#pdlg').hidden=false;$('#p1').focus()};
 $('#px').onclick=()=>$('#pdlg').hidden=true;
 $('#ps').onclick=async()=>{const a=$('#p1').value;if(a.length<6)return toast('Mật khẩu ít nhất 6 ký tự');if(a!==$('#p2').value)return toast('Hai ô mật khẩu chưa giống nhau');
   const{error}=await sb.auth.updateUser({password:a});if(error)return toast('Lỗi: '+error.message);$('#pdlg').hidden=true;toast('Đã đổi mật khẩu ✓')};
 // ---- tra cứu
 const FLN={dang_lam_cty:'Làm cty/cơ quan',di_vang:'Đi vắng',khong_di_hoc:'Trẻ không đi học',sinh_vien:'Sinh viên',da_chet:'Đã chết'};
-const desk=()=>window.matchMedia?matchMedia('(min-width:820px)').matches:true;
+const desk=()=>window.matchMedia?matchMedia('(min-width:1200px)').matches:true;
 function getFilt(){
   if(!desk()){const st=$('#st').value,m={x:'da_chet',v:'di_vang',s:'sinh_vien',c:'dang_lam_cty',k:'khong_di_hoc'};
     return{kh:st===''||m[st]||st=='m'?null:st=='1',flags:m[st]?[m[st]]:[],all:false,thieu:st=='m'?true:null}}
@@ -179,35 +185,45 @@ const fts=t=>{if(!t)return'';const d=new Date(t),z=n=>String(n).padStart(2,'0');
 const minor=p=>{if(!p.ngay_sinh)return false;const t=new Date(p.ngay_sinh+'T00:00:00');t.setFullYear(t.getFullYear()+18);return t>new Date()};
 const tsH=(p,f)=>`<div class="m ts" data-ts="${f}">${p[f]?'cập nhật '+fts(p[f]):''}</div>`;
 const byT=p=>p.sua_boi_ten?`Sửa: ${p.sua_boi_ten} · ${fts(p.updated_at)}`:'';
-const refreshTs=id=>document.querySelectorAll(`.card[data-id="${id}"] [data-ts],.card[data-id="${id}"] [data-by]`).forEach(e=>{if(e.closest('.card').dataset.id!=id)return;
+const refreshTs=id=>document.querySelectorAll(`.card[data-id="${id}"] [data-ts],.card[data-id="${id}"] [data-by],.card[data-id="${id}"] [data-xi]`).forEach(e=>{if(e.closest('.card').dataset.id!=id)return;
+  if(e.dataset.xi!==undefined){e.innerHTML=xiInner(rows[id]);return}
   if(e.dataset.by!==undefined){e.textContent=byT(rows[id]);return}const t=rows[id][e.dataset.ts];e.textContent=t?'cập nhật '+fts(t):''});
-const kdCell=p=>minor(p)||p.khong_di_hoc?`<div class="kd"><label class="tg mo"><input type="checkbox" data-a="kd" ${p.khong_di_hoc?'checked':''}> Trẻ không đi học</label>
-<select class="dk" data-a="kds"><option value="0" ${p.khong_di_hoc?'':'selected'}>Đi học</option><option value="1" ${p.khong_di_hoc?'selected':''}>Không đi học</option></select>${tsH(p,'khong_di_hoc_at')}</div>`:'<div class="kd"></div>';
+const kdCell=p=>minor(p)||p.khong_di_hoc?`<div class="kd"><label class="tg"><input type="checkbox" data-a="kd" ${p.khong_di_hoc?'checked':''}> Trẻ không đi học</label>${tsH(p,'khong_di_hoc_at')}</div>`:'<div class="kd"></div>';
 const stCls=p=>{if(p.da_chet)return'sD';const k=!!p.da_kham,r=k||p.trang_thai_ra_soat==RS[1];return k?'sKR':r?'sR':''};
 const famHtml=p=>{if(!p.so_hsct)return'';const ids=fam[p.so_hsct];
   const body=!ids?'<div class="m">Đang tải…</div>':ids.filter(i=>i!=p.id&&rows[i]).map(i=>card(rows[i],true)).join('')||'<div class="m">Không có người khác cùng hộ</div>';
   return `<div class="fam"><div class="fh2"><span class="m fh">Cùng hộ</span><button class="sm" data-a="add">+ Thêm đối tượng</button></div>${body}</div>`};
-const card=(p,nested)=>{const k=!!p.da_kham,r=k||p.trang_thai_ra_soat==RS[1],c=!!p.dang_lam_cty,open=openSet.has(String(p.id)),ch=p.chu_ho?'Chủ hộ: '+esc(p.chu_ho):'';
+const cardM=(p,nested)=>{const k=!!p.da_kham,r=k||p.trang_thai_ra_soat==RS[1],c=!!p.dang_lam_cty,open=openSet.has(String(p.id)),ch=p.chu_ho?'Chủ hộ: '+esc(p.chu_ho):'';
 return `<div class="card ${stCls(p)} ${open?'open':''}" data-id="${p.id}" ${nested?'data-n="1"':''}>
 <div class="nm"><h3>${esc(p.ho_ten)}</h3><div class="m dk">${ch}</div><div class="m dk by2"><span data-by>${esc(byT(p))}</span> <span class="lnk" data-a="hist">Lịch sử</span></div></div>
 <div class="dc"><span class="dob">${dmy(p.ngay_sinh)}</span><span class="cccd">${p.cccd?esc(p.cccd):'<span class="lnk miss" data-a="addcccd">+ Thêm CCCD</span>'}</span></div>
 <div class="m sub">${esc(p.gioi_tinh)} · ${esc(stripAddr(p.thon))}<span class="mo">${ch?' · '+ch:''}</span>${p.nhom_doi_tuong?' · '+esc(p.nhom_doi_tuong):''}</div>
-<div class="ctl"><div class="kc"><div class="sg mo"><button data-a="k0" class="${k?'':'on no'}">Chưa khám</button><button data-a="k1" class="${k?'on':''}">Đã khám</button></div>
-<select class="dk ${k?'k1':'k0'}" data-a="ks"><option value="0" ${k?'':'selected'}>Chưa khám</option><option value="1" ${k?'selected':''}>Đã khám</option></select>
-${p.noi_kham?`<div class="m">Nơi khám: ${esc(p.noi_kham)}</div>`:''}${tsH(p,'kham_at')}</div>
-<div class="rc"><div class="sg rs mo"><button data-a="r0" class="${r?'':'on no'}">${RS[0]}</button><button data-a="r1" class="${r?'on':''}">${RS[1]}</button></div>
-<select class="dk ${r?'r1':'r0'}" data-a="rss"><option value="0" ${r?'':'selected'}>${RS[0]}</option><option value="1" ${r?'selected':''}>${RS[1]}</option></select>${tsH(p,'ra_soat_at')}</div>
-<div class="g1"><div class="vc"><label class="tg mo"><input type="checkbox" data-a="dv" ${p.di_vang?'checked':''}> Đi vắng</label>
-<select class="dk" data-a="dvs"><option value="0" ${p.di_vang?'':'selected'}>Có mặt</option><option value="1" ${p.di_vang?'selected':''}>Đi vắng</option></select>${tsH(p,'di_vang_at')}</div>
-<div class="cc2"><label class="tg mo"><input type="checkbox" data-a="cty" ${c?'checked':''}> Làm cty/cơ quan</label>
-<select class="dk" data-a="ctys"><option value="0" ${c?'':'selected'}>Không làm cty</option><option value="1" ${c?'selected':''}>Làm cty/cơ quan</option></select>${tsH(p,'cong_tac_at')}</div></div>
+<div class="ctl"><div class="kc"><div class="sg"><button data-a="k0" class="${k?'':'on no'}">Chưa khám</button><button data-a="k1" class="${k?'on':''}">Đã khám</button></div>
+${p.noi_kham?`<div class="m nk">Nơi khám: ${esc(p.noi_kham)}</div>`:''}${tsH(p,'kham_at')}</div>
+<div class="rc"><div class="sg rs"><button data-a="r0" class="${r?'':'on no'}">${RS[0]}</button><button data-a="r1" class="${r?'on':''}">${RS[1]}</button></div>${tsH(p,'ra_soat_at')}</div>
+<div class="g1"><div class="vc"><label class="tg"><input type="checkbox" data-a="dv" ${p.di_vang?'checked':''}> Đi vắng</label>${tsH(p,'di_vang_at')}</div>
+<div class="cc2"><label class="tg"><input type="checkbox" data-a="cty" ${c?'checked':''}> Làm cty/cơ quan</label>${tsH(p,'cong_tac_at')}</div></div>
 <input class="wp" list="wpl" placeholder="Nơi công tác" value="${esc(p.noi_cong_tac)}" ${c?'':'disabled'}>
-<div class="g2">${kdCell(p)}<div class="sc"><label class="tg mo"><input type="checkbox" data-a="sv" ${p.sinh_vien?'checked':''}> Sinh viên</label>
-<select class="dk" data-a="svs"><option value="0" ${p.sinh_vien?'':'selected'}>Không SV</option><option value="1" ${p.sinh_vien?'selected':''}>Sinh viên</option></select>${tsH(p,'sinh_vien_at')}</div>
-<div class="xc"><label class="tg mo"><input type="checkbox" data-a="chet" ${p.da_chet?'checked':''}> Đã chết</label>
-<select class="dk" data-a="chets"><option value="0" ${p.da_chet?'':'selected'}>Còn sống</option><option value="1" ${p.da_chet?'selected':''}>Đã chết</option></select>${tsH(p,'chet_at')}</div></div>
+<div class="g2">${kdCell(p)}<div class="sc"><label class="tg"><input type="checkbox" data-a="sv" ${p.sinh_vien?'checked':''}> Sinh viên</label>${tsH(p,'sinh_vien_at')}</div>
+<div class="xc"><label class="tg"><input type="checkbox" data-a="chet" ${p.da_chet?'checked':''}> Đã chết</label>${tsH(p,'chet_at')}</div></div>
 <div class="m by2 mo"><span data-by>${esc(byT(p))}</span> <span class="lnk" data-a="hist">Lịch sử</span></div></div>
 ${p.cccd?'<button class="sm dk qrb" data-a="qr" title="Sao chép mã QR">Sao chép QR</button>':''}${open&&!nested?famHtml(p):''}</div>`};
+const ckc=(a,t,on)=>`<div class="ck"><input type="checkbox" data-a="${a}" title="${t}" ${on?'checked':''}></div>`;
+const xiInner=p=>{const b=[];if(p.noi_kham)b.push('Nơi khám: '+esc(p.noi_kham));if(p.sua_boi_ten)b.push('Sửa: '+esc(p.sua_boi_ten)+' · '+fts(p.updated_at));
+  [['kham_at','Khám'],['ra_soat_at','Rà soát'],['di_vang_at','Đi vắng'],['cong_tac_at','Công tác'],['khong_di_hoc_at','Không đi học'],['sinh_vien_at','Sinh viên'],['chet_at','Chết']].forEach(([k,l])=>{if(p[k])b.push(l+': '+fts(p[k]))});
+  b.push('<span class="lnk" data-a="hist">Lịch sử</span>');return b.join(' · ')};
+const rowH=(p,nested)=>{const k=!!p.da_kham,r=k||p.trang_thai_ra_soat==RS[1],c=!!p.dang_lam_cty,open=openSet.has(String(p.id));
+return `<div class="card row ${stCls(p)} ${open?'open':''}" data-id="${p.id}" ${nested?'data-n="1"':''}>
+<div class="nm"><h3>${esc(p.ho_ten)}</h3><div class="m">${p.chu_ho?'Chủ hộ: '+esc(p.chu_ho):''}</div></div>
+<span class="dob">${dmy(p.ngay_sinh)}</span><span class="cccd">${p.cccd?esc(p.cccd):'<span class="lnk miss" data-a="addcccd">+ Thêm CCCD</span>'}</span>
+<div class="m">${esc(p.gioi_tinh)} · ${esc(stripAddr(p.thon))}</div>
+${ckc('kk','Đã khám',k)}${ckc('rr','Đã rà soát',r)}${ckc('dv','Đi vắng',p.di_vang)}${ckc('cty','Làm công ty / cơ quan',c)}
+<input class="wp" list="wpl" placeholder="Nơi công tác" value="${esc(p.noi_cong_tac)}" ${c?'':'disabled'}>
+${minor(p)||p.khong_di_hoc?ckc('kd','Trẻ không đi học',p.khong_di_hoc):'<div></div>'}${ckc('sv','Sinh viên',p.sinh_vien)}${ckc('chet','Đã chết',p.da_chet)}
+${p.cccd?'<button class="sm qrb" data-a="qr" title="Sao chép mã QR">Sao chép QR</button>':'<div></div>'}
+<div class="xi" data-xi>${xiInner(p)}</div>${open&&!nested?famHtml(p):''}</div>`};
+const card=(p,nested)=>desk()?rowH(p,nested):cardM(p,nested);
+
 async function save(id,patch,undo){const{data:ts,error}=await sb.from('people').update(patch).eq('id',id).select('kham_at,ra_soat_at,cong_tac_at,chet_at,di_vang_at,sinh_vien_at,khong_di_hoc_at,updated_at,sua_boi_ten').single();if(error){toast(error.code=='23505'?'CCCD này đã tồn tại':'Lỗi: '+error.message);return false}
   if(rows[id]){Object.assign(rows[id],ts);refreshTs(id)}
   if(patch.noi_cong_tac&&!wps.includes(patch.noi_cong_tac)){await sb.from('workplaces').upsert({name:patch.noi_cong_tac},{onConflict:'name',ignoreDuplicates:true});wps.push(patch.noi_cong_tac);wps.sort();fillWp()}
@@ -235,9 +251,11 @@ const copy=async t=>{try{await navigator.clipboard.writeText(t);toast('Đã sao 
 $('#list').addEventListener('click',e=>{const c=e.target.closest('.card');if(!c)return;const id=c.dataset.id,nested=!!c.dataset.n,b=e.target.closest('button[data-a],.lnk[data-a]');
   if(b){const a=b.dataset.a;if(a=='hist')openHist(id);else if(a=='addcccd')openCc(id);else if(a=='add')openDlg(id);else if(a=='qr')copy(qrText(rows[id]));else if(a[0]=='k')upd(id,KHAM(a=='k1'));else if(a[0]=='r'){if(a=='r0'&&rows[id].da_kham)toast('Đã khám thì mặc định là đã rà soát');else upd(id,{trang_thai_ra_soat:RS[+(a=='r1')]})}return}
   if(e.target.closest('input,select,label,button,.fam')&&!nested&&e.target.closest('.fam'))return;
-  if(e.target.closest('input,select,label,button'))return;toggle(id,nested)});
+  if(e.target.closest('input,select,label,button,.ck'))return;toggle(id,nested)});
 $('#list').addEventListener('change',e=>{const t=e.target,id=t.closest('.card').dataset.id,a=t.dataset.a;
-  if(a=='ks')upd(id,KHAM(t.value=='1'));
+  if(a=='kk')upd(id,KHAM(t.checked));
+  else if(a=='rr'){if(!t.checked&&rows[id].da_kham){toast('Đã khám thì mặc định là đã rà soát');draw(id);return}upd(id,{trang_thai_ra_soat:RS[+t.checked]})}
+  else if(a=='ks')upd(id,KHAM(t.value=='1'));
   else if(FLG[a]){const v=t.type=='checkbox'?t.checked:t.value=='1';upd(id,v?{[FLG[a]]:true,trang_thai_ra_soat:RS[1]}:{[FLG[a]]:false})}   // tích => tự đã rà soát
   else if(a=='chet'||a=='chets'){const v=a=='chet'?t.checked:t.value=='1';if(v&&!confirm(`Xác nhận "${rows[id].ho_ten}" ĐÃ CHẾT?`)){draw(id);return}upd(id,{da_chet:v})}
   else if(a=='rss'){if(t.value=='0'&&rows[id].da_kham){toast('Đã khám thì mặc định là đã rà soát');draw(id)}else upd(id,{trang_thai_ra_soat:RS[+t.value]})}
@@ -280,7 +298,7 @@ $('#xls').onclick=async()=>{const b=$('#xls'),lab=b.textContent,all=[];b.disable
 // ---- lịch sử thay đổi, nhật ký, cán bộ
 const LB={da_kham:'Khám',trang_thai_ra_soat:'Rà soát',dang_lam_cty:'Làm cty/cơ quan',noi_cong_tac:'Nơi công tác',di_vang:'Đi vắng',sinh_vien:'Sinh viên',khong_di_hoc:'Trẻ không đi học',da_chet:'Đã chết',noi_kham:'Nơi khám',nhom_doi_tuong:'Nhóm đối tượng',ho_ten:'Họ tên',ngay_sinh:'Ngày sinh',gioi_tinh:'Giới tính',cccd:'CCCD',chu_ho:'Chủ hộ',so_hsct:'Số hộ',thon:'Thôn',stt:'STT'};
 const val=v=>v==null||v===''?'(trống)':v=='true'?'Có':v=='false'?'Không':v;
-const logLine=x=>x.hanh_dong=='xuat'?'Xuất Excel: '+esc(x.moi):x.hanh_dong=='them'?'Thêm mới':x.hanh_dong=='xoa'?'Xóa':`${LB[x.truong]||esc(x.truong)}: ${esc(val(x.cu))} → ${esc(val(x.moi))}`;
+const logLine=x=>x.hanh_dong=='mat_khau'?esc(x.moi):x.hanh_dong=='xuat'?'Xuất Excel: '+esc(x.moi):x.hanh_dong=='them'?'Thêm mới':x.hanh_dong=='xoa'?'Xóa':`${LB[x.truong]||esc(x.truong)}: ${esc(val(x.cu))} → ${esc(val(x.moi))}`;
 async function openHist(id){const p=rows[id];$('#htl').textContent='Lịch sử: '+p.ho_ten;$('#hbody').innerHTML='Đang tải…';$('#hdlg').hidden=false;
   const{data,error}=await sb.from('nhat_ky').select('*').eq('person_id',id).order('luc',{ascending:false}).order('id',{ascending:false}).limit(40);
   $('#hbody').innerHTML=error?esc(error.message):data.length?data.map(x=>`<div class="lrow"><b>${esc(x.ten_nguoi)}</b> · ${fts(x.luc)}<br>${logLine(x)}</div>`).join(''):'Chưa có thay đổi nào được ghi lại'}
@@ -303,8 +321,10 @@ $('#llist').addEventListener('click',async e=>{const b=e.target.closest('[data-l
 let users=[];
 async function loadUsers(){const{data,error}=await sb.rpc('ds_nguoi_dung');if(error)return toast(error.message);users=data;
   $('#ulist').innerHTML=data.map(u=>`<div class="lrow" data-uid="${u.id}"><b>${esc(u.ho_ten)}</b> · ${esc(u.email||'')}<br>${u.vai_tro=='admin'?'Quản trị':'Cán bộ'} · ${u.hoat_dong?'Hoạt động':'<b>Đã khóa</b>'}
-  ${u.id==me.id?'':` <button class="sm" data-u="ten">Đổi tên</button><button class="sm" data-u="khoa">${u.hoat_dong?'Khóa':'Mở khóa'}</button><button class="sm" data-u="vt">${u.vai_tro=='admin'?'Hạ xuống cán bộ':'Nâng lên quản trị'}</button>`}</div>`).join('')}
+  ${u.id==me.id?'':` <button class="sm" data-u="ten">Đổi tên</button><button class="sm" data-u="mk">Đặt lại mật khẩu</button><button class="sm" data-u="khoa">${u.hoat_dong?'Khóa':'Mở khóa'}</button><button class="sm" data-u="vt">${u.vai_tro=='admin'?'Hạ xuống cán bộ':'Nâng lên quản trị'}</button>`}</div>`).join('')}
 $('#ulist').addEventListener('click',async e=>{const b=e.target.closest('[data-u]');if(!b)return;const id=b.closest('[data-uid]').dataset.uid,u=users.find(x=>x.id==id);let patch;
+  if(b.dataset.u=='mk'){const m=prompt(`Mật khẩu mới cho ${u.ho_ten} (từ 6 ký tự):`);if(m===null)return;if(m.length<6)return toast('Mật khẩu ít nhất 6 ký tự');
+    const{error}=await sb.rpc('dat_lai_mat_khau',{p_id:id,p_mk:m});toast(error?'Lỗi: '+error.message:'Đã đặt lại mật khẩu ✓ — hãy báo mật khẩu mới cho cán bộ');return}
   if(b.dataset.u=='ten'){const n=prompt('Tên hiển thị',u.ho_ten);if(!n||!n.trim())return;patch={ho_ten:n.trim()}}
   else if(b.dataset.u=='khoa'){if(u.hoat_dong&&!confirm('Khóa tài khoản '+u.ho_ten+'?'))return;patch={hoat_dong:!u.hoat_dong}}
   else patch={vai_tro:u.vai_tro=='admin'?'can_bo':'admin'};
