@@ -110,7 +110,7 @@ html,body{height:100%;overflow:hidden;overscroll-behavior:none}
 <div id="blocked" hidden><h2>Chưa được cấp quyền</h2><p class="m">Tài khoản của bạn chưa được cấp quyền hoặc đã bị khóa. Vui lòng liên hệ quản trị viên.</p><button id="out2">Đăng xuất</button></div>
 <div id="app" hidden>
 <div id="top"><div class="mebar"><span id="me"></span><span><button class="lnk" id="pwb">Đổi mật khẩu</button> <button class="lnk" id="out">Thoát</button></span></div>
-<div class="tab" id="tabs"><button class="on" data-t="s">Tra cứu</button><button data-t="l">Nhật ký</button><button data-t="n">Ghi chú</button><button class="adm" data-t="i" hidden>Nhập Excel</button><button class="adm" data-t="u" hidden>Cán bộ</button></div></div>
+<div class="tab" id="tabs"><button class="on" data-t="s">Tra cứu</button><button data-t="l">Nhật ký</button><button data-t="n">Ghi chú</button><button class="sup" data-t="i" hidden>Nhập Excel</button><button class="adm" data-t="u" hidden>Cán bộ</button></div></div>
 <div id="pager">
 <section class="pg on" data-p="s">
 <div id="stat" class="m" style="font-size:13px;margin:6px 0 0"></div>
@@ -135,18 +135,18 @@ html,body{height:100%;overflow:hidden;overscroll-behavior:none}
 </section>
 <section class="pg" data-p="l"><div class="vbox"><h3 style="margin:0 0 6px" id="lh">Nhật ký</h3>
 <div class="row"><input type="date" id="ld1" title="Từ ngày"><input type="date" id="ld2" title="Đến ngày"><select id="lw" class="adm" hidden><option value="">Tất cả cán bộ</option></select><button class="p s" id="lgo">Xem</button></div>
-<div id="lsum" class="m" style="margin-top:8px"></div></div><div id="llist"></div><div class="row"><button id="lmore" hidden>Xem thêm</button></div></section>
-<section class="pg" data-p="n"><div class="vbox"><h3 style="margin:0 0 6px">Ghi chú của tôi</h3>
-<textarea id="nt" maxlength="5000" placeholder="Viết ghi chú…"></textarea>
-<div class="row"><button class="p s" id="nadd">Lưu ghi chú</button></div><p class="m" style="margin:6px 0 0;font-size:13px">Ghi chú chỉ mình bạn xem được.</p></div>
+<div id="lsum" style="margin-top:8px"></div></div><div class="m" id="ldh" style="margin:12px 2px 0;font-weight:600"></div><div id="llist"></div><div class="row"><button id="lmore" hidden>Xem thêm</button></div></section>
+<section class="pg" data-p="n"><div class="vbox"><h3 style="margin:0 0 6px">Ghi chú · Hướng dẫn</h3>
+<div class="adm" hidden><textarea id="nt" maxlength="5000" placeholder="Viết ghi chú / hướng dẫn làm việc…"></textarea>
+<div class="row"><button class="p s" id="nadd">Lưu ghi chú</button></div></div><p class="m" style="margin:6px 0 0;font-size:13px">Ghi chú chung: mọi cán bộ đều xem được, chỉ quản trị mới thêm/sửa/xóa được.</p></div>
 <div id="nlist"></div><p id="ninfo" class="m"></p><div class="row"><button id="nmore" hidden>Xem thêm</button></div></section>
-<section class="pg adm" data-p="i" hidden><div class="card" style="display:block"><h3>Cập nhật hàng loạt từ Excel (đối chiếu theo CCCD)</h3>
+<section class="pg sup" data-p="i" hidden><div class="card" style="display:block"><h3>Cập nhật hàng loạt từ Excel (đối chiếu theo CCCD)</h3>
 <p class="m">Dùng đúng mẫu cột: CCCD, Tình trạng khám, Nơi khám, Đang làm công ty, Nơi công tác, Nhóm đối tượng, Trạng thái rà soát, Đi vắng, Sinh viên. Ô trống = giữ nguyên dữ liệu cũ.</p>
 <input type="file" id="f" accept=".xlsx,.xls,.csv"><label class="tg"><input type="checkbox" id="addnew"> Thêm người mới nếu chưa có trong CSDL (dùng để nạp danh sách gốc 50.000 người)</label>
 <button class="p" id="run" disabled>Bắt đầu</button><p id="pr" class="m"></p></div></section>
 <section class="pg adm" data-p="u" hidden><div class="vbox"><h3 style="margin:0 0 6px">Cán bộ</h3><div id="ulist"></div>
 <p class="m">Thêm cán bộ: tạo tài khoản trong Supabase → Authentication → Users → Add user (tick Auto Confirm User), rồi nhập email và tên ở đây.</p>
-<div class="row"><input id="ue" type="email" placeholder="Email tài khoản"><input id="un" placeholder="Họ tên cán bộ"><select id="ur"><option value="can_bo">Cán bộ</option><option value="admin">Quản trị</option></select><button class="p s" id="uadd">Thêm</button></div></div></section>
+<div class="row"><input id="ue" type="email" placeholder="Email tài khoản"><input id="un" placeholder="Họ tên cán bộ"><select id="ur" class="sup" hidden><option value="can_bo">Cán bộ</option><option value="admin">Quản trị</option><option value="superadmin">Siêu quản trị</option></select><button class="p s" id="uadd">Thêm</button></div></div></section>
 </div></div></div>
 <div id="dlg" hidden><div class="box"><h3 style="margin:0">Thêm đối tượng cùng hộ</h3><div class="m" id="dinfo"></div>
 <input id="nh" placeholder="Họ và tên *"><div class="row"><input id="nd" type="date" title="Ngày sinh"><select id="ng"><option value="">Giới tính</option><option>Nam</option><option>Nữ</option></select></div>
@@ -177,8 +177,9 @@ async function start(u){
   const{data}=await sb.from('nguoi_dung').select('*').eq('id',u.id).maybeSingle();
   if(!data||!data.hoat_dong){$('#app').hidden=true;$('#blocked').hidden=false;return}
   me=data;$('#blocked').hidden=true;$('#app').hidden=false;
-  $('#me').textContent='👤 '+me.ho_ten+(me.vai_tro=='admin'?' · Quản trị':'');
-  document.querySelectorAll('.adm').forEach(e=>e.hidden=me.vai_tro!='admin');$('#lh').textContent=adminOn()?'Nhật ký thay đổi':'Nhật ký của tôi';showPage('s',false);init()}
+  $('#me').textContent='👤 '+me.ho_ten+(me.vai_tro=='superadmin'?' · Siêu quản trị':me.vai_tro=='admin'?' · Quản trị':'');
+  document.querySelectorAll('.adm').forEach(e=>e.hidden=!adminOn());document.querySelectorAll('.sup').forEach(e=>e.hidden=!superOn());
+  $('#lh').textContent='Nhật ký thay đổi';$('#ldh').textContent=adminOn()?'Chi tiết thay đổi':'Chi tiết thay đổi của tôi';showPage('s',false);init()}
 async function init(){
   loadStats();if(adminOn())loadWho();
   $('#rs').innerHTML='<option value="">Rà soát: tất cả</option>'+RS.map(x=>`<option>${x}</option>`).join('');
@@ -206,7 +207,7 @@ $('#msb').onclick=e=>{e.stopPropagation();$('#msp').hidden=!$('#msp').hidden};
 document.addEventListener('click',e=>{if(!e.target.closest('#ms'))$('#msp').hidden=true});
 $('#msp').addEventListener('change',()=>{msLabel();search()});
 let seq=0,lastArgs={},resF=false;
-function setRes(n,f){resF=f;const adm=me&&me.vai_tro=='admin';$('#res').hidden=!(f||adm);
+function setRes(n,f){resF=f;const adm=adminOn();$('#res').hidden=!(f||adm);
   $('#cnt').textContent=n==null?'':(f?`Kết quả: ${fmt(n)} người`:`Toàn xã: ${fmt(n)} người`);$('#xls').textContent=f?'⬇ Xuất danh sách lọc':'⬇ Xuất toàn xã'}
 async function search(reset=true){
   const my=++seq;
@@ -325,13 +326,14 @@ $('#ds').onclick=async()=>{const b=rows[addFor],ho=$('#nh').value.trim().replace
 ['#q','#year'].forEach(s=>$(s).oninput=()=>{clearTimeout(timer);timer=setTimeout(search,300)});
 ['#thon','#st','#rs','#kh','#cc'].forEach(s=>$(s).onchange=()=>search());$('#more').onclick=()=>search(false);
 // ---- các trang: trên điện thoại vuốt ngang (scroll-snap, mỗi trang cuộn dọc riêng); trên máy tính bấm tab
-function adminOn(){return!!me&&me.vai_tro=='admin'}
+function adminOn(){return!!me&&(me.vai_tro=='admin'||me.vai_tro=='superadmin')}
+function superOn(){return!!me&&me.vai_tro=='superadmin'}
 const pager=$('#pager');let cur='s',scT,seen={};
 const vpages=()=>[...pager.children].filter(p=>!p.hidden);
 const hl=t=>document.querySelectorAll('#tabs [data-t]').forEach(x=>x.classList.toggle('on',x.dataset.t==t));
 function enter(t){cur=t;const n=Date.now();
   if(t=='l'){if(n-(seen.l||0)>20000){seen.l=n;loadLog()}}
-  else if(t=='n'){if(!seen.n){seen.n=n;loadNotes()}}
+  else if(t=='n'){if(n-(seen.n||0)>20000){seen.n=n;loadNotes()}}
   else if(t=='u')loadUsers()}
 function showPage(t,smooth){const ps=vpages(),i=ps.findIndex(p=>p.dataset.p==t);if(i<0)return;hl(t);
   if(desk()){ps.forEach(p=>p.classList.toggle('on',p==ps[i]));window.scrollTo(0,0);enter(t);return}
@@ -357,16 +359,13 @@ $('#advb').onclick=()=>{const o=$('#adv').hidden;$('#adv').hidden=!o;$('#ts').cl
 ['#aw','#ae','#d1','#d2'].forEach(s=>$(s).onchange=advGo);$('#thon').addEventListener('change',()=>loadAdvStats());
 const rangeTxt=()=>{const a=$('#d1').value,b=$('#d2').value||a;return a||b?(a==b?'ngày '+dmy(a):`từ ${a?dmy(a):'…'} đến ${b?dmy(b):'nay'}`):'toàn bộ thời gian'};
 async function loadAdvStats(){if(!adminOn()||$('#adv').hidden)return;const my=++astSeq,A=getAdv(),th=$('#thon').value||null;$('#astat').innerHTML='<div class="m" style="margin-top:10px">Đang thống kê…</div>';
-  const[a,b]=await Promise.all([sb.rpc('thong_ke_ra_soat',{p_who:A.who,p_th:th,p_t1:A.t1,p_t2:A.t2}),sb.rpc('thong_ke_can_bo',{p_th:th,p_t1:A.t1,p_t2:A.t2})]);
-  if(my!==astSeq)return;if(a.error||b.error){$('#astat').innerHTML='<div class="m" style="margin-top:10px">Lỗi thống kê: '+esc((a.error||b.error).message)+' — đã chạy migration mới chưa?</div>';return}
+  const a=await sb.rpc('thong_ke_ra_soat',{p_who:A.who,p_th:th,p_t1:A.t1,p_t2:A.t2});
+  if(my!==astSeq)return;if(a.error){$('#astat').innerHTML='<div class="m" style="margin-top:10px">Lỗi thống kê: '+esc(a.error.message)+' — đã chạy migration mới chưa?</div>';return}
   const r=(a.data||[])[0]||{},n=+r.n_tong||0,who=A.who?$('#aw').selectedOptions[0].text:'';
   const chips=[['rs','được rà soát',n,0],['kham','đã khám',r.n_kham,1],['sv','là sinh viên',r.n_sv,1],['cty','làm cty/cơ quan',r.n_cty,1],['dv','đi vắng',r.n_dv,1],['chet','đã chết',r.n_chet,1]];
-  const T=b.data||[];
   $('#astat').innerHTML=`<div style="margin-top:10px"><b>Thống kê ${rangeTxt()}${who?' · '+esc(who):''}${th?' · '+esc(th):''}</b></div>
 <div class="m" style="font-size:12px;margin:2px 0 4px">Ô đầu = số người được rà soát; các ô sau = trong số đó hiện đã khám / là sinh viên… Bấm vào ô để xem danh sách.</div>
-<div class="stg">${chips.map(([c,l,v,p])=>`<button type="button" class="chip" data-c="${c}"><b>${fmt(+v||0)}</b><span>${l}${p&&n?' · '+Math.round((+v||0)*100/n)+'%':''}</span></button>`).join('')}</div>
-<div style="margin-top:10px"><b>Theo cán bộ</b> <span class="m" style="font-size:12px">(số người; bấm vào dòng để lọc theo cán bộ)</span></div>
-${T.length?`<div class="tw"><table class="at"><thead><tr><th>Cán bộ</th><th>Rà soát</th><th>Đã khám</th><th>Cty</th><th>SV</th><th>Đi vắng</th><th>Chết</th></tr></thead><tbody>${T.map(x=>`<tr data-w="${x.uid}" class="${A.who==x.uid?'sel':''}"><td>${esc(x.ten)}</td><td>${fmt(x.n_rs)}</td><td>${fmt(x.n_kham)}</td><td>${fmt(x.n_cty)}</td><td>${fmt(x.n_sv)}</td><td>${fmt(x.n_dv)}</td><td>${fmt(x.n_chet)}</td></tr>`).join('')}</tbody></table></div>`:'<div class="m">Chưa có thao tác nào trong khoảng này</div>'}`}
+<div class="stg">${chips.map(([c,l,v,p])=>`<button type="button" class="chip" data-c="${c}"><b>${fmt(+v||0)}</b><span>${l}${p&&n?' · '+Math.round((+v||0)*100/n)+'%':''}</span></button>`).join('')}</div>`}
 function applyChip(c){$('#ae').value='ra_soat';$('#kh').value='';$('#st').value='';document.querySelectorAll('#msp input').forEach(x=>x.checked=false);
   const fl={sv:'sinh_vien',cty:'dang_lam_cty',dv:'di_vang',chet:'da_chet'},st={sv:'s',cty:'c',dv:'v',chet:'x'};
   if(c=='kham'){$('#kh').value='1';$('#st').value='1'}else if(fl[c]){const i=document.querySelector(`#msp input[value="${fl[c]}"]`);if(i)i.checked=true;$('#st').value=st[c]}
@@ -377,10 +376,10 @@ $('#adv').addEventListener('click',e=>{
     $('#d1').value=a;$('#d2').value=c;advGo();return}
   if(e.target.closest('#aclr')){$('#aw').value=$('#ae').value=$('#d1').value=$('#d2').value='';advGo();return}
   const ch=e.target.closest('.chip');if(ch){applyChip(ch.dataset.c);return}
-  const tr=e.target.closest('tr[data-w]');if(tr){$('#aw').value=$('#aw').value==tr.dataset.w?'':tr.dataset.w;advGo()}});
+  });
 // ---- ghi chú cá nhân
 let npage=0,nts={};const NP=30;
-const noteH=n=>`<div class="lrow nt" data-nid="${n.id}"><div class="ntx">${esc(n.noi_dung)}</div><div class="m">${fts(n.sua_luc)}</div><div><button class="sm" data-n="e">Sửa</button><button class="sm" data-n="d">Xóa</button></div></div>`;
+const noteH=n=>`<div class="lrow nt" data-nid="${n.id}"><div class="ntx">${esc(n.noi_dung)}</div><div class="m">${fts(n.sua_luc)}</div>${adminOn()?'<div><button class="sm" data-n="e">Sửa</button><button class="sm" data-n="d">Xóa</button></div>':''}</div>`;
 async function loadNotes(reset=true){if(reset){npage=0;nts={};$('#nlist').innerHTML=''}
   const{data,error}=await sb.from('ghi_chu').select('*').order('sua_luc',{ascending:false}).order('id',{ascending:false}).range(npage*NP,npage*NP+NP-1);
   if(error){seen.n=0;return toast(error.message)}
@@ -418,34 +417,45 @@ async function openHist(id){const p=rows[id];$('#htl').textContent='Lịch sử'
   const{data,error}=await sb.from('nhat_ky').select('*').eq('person_id',id).order('luc',{ascending:false}).order('id',{ascending:false}).limit(40);
   $('#hbody').innerHTML=error?esc(error.message):data.length?data.map(x=>`<div class="lrow"><b>${esc(x.ten_nguoi)}</b> · ${fts(x.luc)}<br>${logLine(x)}</div>`).join(''):'Chưa có thay đổi nào được ghi lại'}
 $('#hx').onclick=()=>$('#hdlg').hidden=true;
-let lpage=0;const LP=50,today=()=>new Date().toLocaleDateString('sv-SE');
-async function loadLog(reset=true){
+let lpage=0,lsSeq=0;const LP=50,today=()=>new Date().toLocaleDateString('sv-SE');
+// bảng thống kê theo cán bộ: ai cũng xem được số liệu của tất cả; bảng chi tiết bên dưới chỉ xem của mình (quản trị xem tất cả)
+async function loadLogSum(from,to){const my=++lsSeq;$('#lsum').innerHTML='<div class="m">Đang thống kê…</div>';
+  const{data,error}=await sb.rpc('thong_ke_can_bo',{p_t1:from,p_t2:to});if(my!==lsSeq)return;
+  if(error){$('#lsum').innerHTML='<div class="m">Lỗi thống kê: '+esc(error.message)+' — đã chạy migration mới chưa?</div>';return}
+  const T=data||[],n=v=>fmt(+v||0),sel=$('#lw').value;
+  $('#lsum').innerHTML=T.length?`<div class="m" style="font-size:12px;margin-bottom:4px">Rà soát…Chết: số người cán bộ đã đánh dấu (hiện vẫn đang ở trạng thái đó). Tổng số người = số người khác nhau đã được thay đổi; Tổng số thay đổi = số lần thay đổi.${adminOn()?' Bấm vào dòng để xem chi tiết của cán bộ đó.':''}</div>
+<div class="tw"><table class="at"><thead><tr><th>Cán bộ</th><th>Rà soát</th><th>Đã khám</th><th>Cty</th><th>SV</th><th>Đi vắng</th><th>Chết</th><th>Tổng số người</th><th>Tổng số thay đổi</th></tr></thead><tbody>${T.map(x=>`<tr data-w="${x.uid}" class="${sel==x.uid?'sel':''}"${adminOn()?'':' style="cursor:default"'}><td>${esc(x.ten)}${me&&x.uid==me.id?' <span class="m">(bạn)</span>':''}</td><td>${n(x.n_rs)}</td><td>${n(x.n_kham)}</td><td>${n(x.n_cty)}</td><td>${n(x.n_sv)}</td><td>${n(x.n_dv)}</td><td>${n(x.n_chet)}</td><td><b>${n(x.n_nguoi)}</b></td><td><b>${n(x.n_thay_doi)}</b></td></tr>`).join('')}</tbody></table></div>`:'<div class="m">Không có thay đổi trong khoảng này</div>'}
+async function loadLog(reset=true,sum=true){
   if(reset){lpage=0;$('#llist').innerHTML='';if(!$('#ld1').value)$('#ld1').value=today()}
   const d1=$('#ld1').value||today(),d2=$('#ld2').value||d1,from=new Date(d1+'T00:00:00').toISOString(),to=new Date(d2+'T23:59:59.999').toISOString();
-  if(reset){const{data:s}=await sb.rpc('thong_ke_nhat_ky',{p_from:from,p_to:to});   // cán bộ thường: chỉ thấy số liệu của mình (RLS)
-    $('#lsum').innerHTML=(s||[]).map(x=>`<b>${esc(x.ten_nguoi)}</b>: ${fmt(x.so_thay_doi)} thay đổi · ${fmt(x.so_doi_tuong)} người`).join('<br>')||'Không có thay đổi trong khoảng này'}
+  if(reset&&sum)loadLogSum(from,to);
   let q=sb.from('nhat_ky').select('*').gte('luc',from).lte('luc',to).order('luc',{ascending:false}).order('id',{ascending:false}).range(lpage*LP,lpage*LP+LP-1);
   if(adminOn()){if($('#lw').value)q=q.eq('nguoi',$('#lw').value)}else if(me)q=q.eq('nguoi',me.id);
   const{data,error}=await q;if(error)return toast(error.message);
-  const adm=adminOn();
-  $('#llist').insertAdjacentHTML('beforeend',data.map(x=>`<div class="lrow"><b>${esc(x.ten_nguoi)}</b> · ${fts(x.luc)}<br>${x.ten_doi_tuong?esc(x.ten_doi_tuong)+' — ':''}${logLine(x)}${adm&&x.hanh_dong=='sua'&&x.truong!='khong_di_hoc'?` <button class="sm" data-lid="${x.id}">Hoàn tác</button>`:''}</div>`).join(''));
+  $('#llist').insertAdjacentHTML('beforeend',data.map(x=>`<div class="lrow"><b>${esc(x.ten_nguoi)}</b> · ${fts(x.luc)}<br>${x.ten_doi_tuong?esc(x.ten_doi_tuong)+' — ':''}${logLine(x)}</div>`).join(''));
+  if(reset&&!data.length)$('#llist').innerHTML='<div class="m" style="margin-top:6px">Không có chi tiết trong khoảng này</div>';
   $('#lmore').hidden=data.length<LP;lpage++}
 $('#lgo').onclick=()=>loadLog();$('#lmore').onclick=()=>loadLog(false);
-$('#llist').addEventListener('click',async e=>{const b=e.target.closest('[data-lid]');if(!b||!confirm('Hoàn tác thay đổi này (đưa về giá trị cũ)?'))return;
-  const{error}=await sb.rpc('hoan_tac_nhat_ky',{p_id:+b.dataset.lid});toast(error?'Lỗi: '+error.message:'Đã hoàn tác');if(!error){loadLog();loadStats()}});
-let users=[];
+$('#lsum').addEventListener('click',e=>{if(!adminOn())return;const tr=e.target.closest('tr[data-w]');if(!tr)return;
+  $('#lw').value=$('#lw').value==tr.dataset.w?'':tr.dataset.w;document.querySelectorAll('#lsum tr[data-w]').forEach(r=>r.classList.toggle('sel',r.dataset.w==$('#lw').value));loadLog(true,false)});
+let users=[];const VT={superadmin:'Siêu quản trị',admin:'Quản trị',can_bo:'Cán bộ'};
 async function loadUsers(){const{data,error}=await sb.rpc('ds_nguoi_dung');if(error)return toast(error.message);users=data;fillWho(data);
-  $('#ulist').innerHTML=data.map(u=>`<div class="lrow" data-uid="${u.id}"><b>${esc(u.ho_ten)}</b> · ${esc(u.email||'')}<br>${u.vai_tro=='admin'?'Quản trị':'Cán bộ'} · ${u.hoat_dong?'Hoạt động':'<b>Đã khóa</b>'}
-  ${u.id==me.id?'':` <button class="sm" data-u="ten">Đổi tên</button><button class="sm" data-u="mk">Đặt lại mật khẩu</button><button class="sm" data-u="khoa">${u.hoat_dong?'Khóa':'Mở khóa'}</button><button class="sm" data-u="vt">${u.vai_tro=='admin'?'Hạ xuống cán bộ':'Nâng lên quản trị'}</button>`}</div>`).join('')}
+  // quản trị thường không sửa được tài khoản siêu quản trị; chỉ siêu quản trị mới đổi được quyền
+  $('#ulist').innerHTML=data.map(u=>{const mine=u.id==me.id,ed=!mine&&(superOn()||u.vai_tro!='superadmin');
+    return `<div class="lrow" data-uid="${u.id}"><b>${esc(u.ho_ten)}</b> · ${esc(u.email||'')}<br>${VT[u.vai_tro]||esc(u.vai_tro)} · ${u.hoat_dong?'Hoạt động':'<b>Đã khóa</b>'}
+  ${ed?` <button class="sm" data-u="ten">Đổi tên</button><button class="sm" data-u="mk">Đặt lại mật khẩu</button><button class="sm" data-u="khoa">${u.hoat_dong?'Khóa':'Mở khóa'}</button>`:''}${superOn()&&!mine?` <select class="sm" data-r title="Đổi quyền">${Object.keys(VT).map(k=>`<option value="${k}" ${k==u.vai_tro?'selected':''}>${VT[k]}</option>`).join('')}</select>`:''}</div>`}).join('')}
 $('#ulist').addEventListener('click',async e=>{const b=e.target.closest('[data-u]');if(!b)return;const id=b.closest('[data-uid]').dataset.uid,u=users.find(x=>x.id==id);let patch;
   if(b.dataset.u=='mk'){const m=prompt(`Mật khẩu mới cho ${u.ho_ten} (từ 6 ký tự):`);if(m===null)return;if(m.length<6)return toast('Mật khẩu ít nhất 6 ký tự');
     const{error}=await sb.rpc('dat_lai_mat_khau',{p_id:id,p_mk:m});toast(error?'Lỗi: '+error.message:'Đã đặt lại mật khẩu ✓ — hãy báo mật khẩu mới cho cán bộ');return}
   if(b.dataset.u=='ten'){const n=prompt('Tên hiển thị',u.ho_ten);if(!n||!n.trim())return;patch={ho_ten:n.trim()}}
   else if(b.dataset.u=='khoa'){if(u.hoat_dong&&!confirm('Khóa tài khoản '+u.ho_ten+'?'))return;patch={hoat_dong:!u.hoat_dong}}
-  else patch={vai_tro:u.vai_tro=='admin'?'can_bo':'admin'};
+  else return;
   const{error}=await sb.from('nguoi_dung').update(patch).eq('id',id);toast(error?'Lỗi: '+error.message:'Đã lưu ✓');loadUsers()});
+$('#ulist').addEventListener('change',async e=>{const s=e.target.closest('select[data-r]');if(!s||!superOn())return;const id=s.closest('[data-uid]').dataset.uid,u=users.find(x=>x.id==id);
+  if(!confirm(`Đổi quyền của ${u.ho_ten} thành "${VT[s.value]}"?`)){s.value=u.vai_tro;return}
+  const{error}=await sb.from('nguoi_dung').update({vai_tro:s.value}).eq('id',id);toast(error?'Lỗi: '+error.message:'Đã đổi quyền ✓');loadUsers()});
 $('#uadd').onclick=async()=>{const e=$('#ue').value.trim(),n=$('#un').value.trim();if(!e||!n)return toast('Nhập email và họ tên');
-  const{data,error}=await sb.rpc('them_nguoi_dung',{p_email:e,p_ten:n,p_vai_tro:$('#ur').value});toast(error?'Lỗi: '+error.message:data=='ok'?'Đã thêm ✓':data);if(data=='ok'){$('#ue').value=$('#un').value='';loadUsers()}};
+  const{data,error}=await sb.rpc('them_nguoi_dung',{p_email:e,p_ten:n,p_vai_tro:superOn()?$('#ur').value:'can_bo'});toast(error?'Lỗi: '+error.message:data=='ok'?'Đã thêm ✓':data);if(data=='ok'){$('#ue').value=$('#un').value='';loadUsers()}};
 // ---- nhập Excel
 let recs=[];const H={'cccd':'cccd','ho va ten':'ho_ten','ngay sinh':'ngay_sinh','gioi tinh':'gioi_tinh','ho va ten chu ho':'chu_ho','so hsct':'so_hsct','noi thuong tru':'thon','nhom doi tuong':'nhom_doi_tuong','trang thai ra soat':'trang_thai_ra_soat','tinh trang kham':'da_kham','noi kham':'noi_kham','dang lam cong ty':'dang_lam_cty','di vang':'di_vang','sinh vien':'sinh_vien','noi cong tac':'noi_cong_tac','stt':'stt'};
 const yn=v=>{v=norm(String(v??''));if(!v)return null;if(/^(chua|khong|0|false|no|k$)/.test(v))return false;if(/^(da|co|x|1|true|yes|v)/.test(v))return true;return null};
