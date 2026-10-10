@@ -10,6 +10,8 @@
 - CSDL đã có (đã chạy bản cũ): chạy `migration_tong_hop.sql` (chạy lại nhiều lần vẫn an toàn), rồi thay `index.html`.
   Các tài khoản đang có sẽ tự thành "cán bộ".
 
+- Bản có "Thêm đối tượng mới" (mã hộ tự sinh MAHOxxxx) và "Xem theo thôn" ở Nhật ký: chạy thêm `migration_them_doi_tuong_thon.sql` (sau 2 file trên), rồi thay `index.html`.
+
 # Tài khoản quản trị (admin)
 1. Supabase → Authentication → Users → Add user: nhập email + mật khẩu mạnh, tick "Auto Confirm User".
 2. Mở `tao_admin.sql`, sửa email/tên cho đúng, chạy trong SQL Editor (kết quả `ok`).
@@ -28,3 +30,7 @@ Thêm cán bộ sau này: tạo tài khoản ở bước 1, rồi vào tab "Cán
 
 # Xuất Excel
 Chỉ quản trị viên thấy nút xuất. Không lọc = toàn xã; đang lọc = xuất đúng danh sách lọc. Mỗi lần xuất được ghi vào tab Nhật ký.
+
+# Thêm đối tượng mới / Thống kê theo thôn
+- Tra cứu → dòng chữ "+ Thêm đối tượng mới" (dưới chú thích màu): tạo hộ mới, mã hộ tự cấp dạng MAHO0001, MAHO0002… không trùng (bỏ qua mã đã có trong dữ liệu). Để trống "chủ hộ" = chính người đó là chủ hộ. Mọi cán bộ dùng được; việc thêm được ghi nhật ký.
+- Nhật ký → nút "Xem theo cán bộ / Xem theo thôn": chỉ quản trị và siêu quản trị thấy; cán bộ thường chỉ có bảng theo cán bộ như cũ.

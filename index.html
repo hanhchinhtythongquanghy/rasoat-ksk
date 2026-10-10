@@ -22,8 +22,8 @@ button{cursor:pointer}button.p{background:var(--p);border-color:var(--p);color:#
 .card.open{box-shadow:0 0 0 2px var(--p)}.card input,.card select,.card button,.card label{cursor:auto}.card button,.card select{cursor:pointer}
 .card.sD{background:rgba(128,128,128,.2);border-left-color:#888}.card.sD>.nm h3{text-decoration:line-through;opacity:.75}
 .ts{font-size:12px;color:var(--m)}.ts:empty{display:none}.fh2{display:flex;justify-content:space-between;align-items:center}
-#dlg,#hdlg,#pdlg,#cdlg{position:fixed;inset:0;background:#000a;z-index:40;display:flex;align-items:center;justify-content:center;padding:12px}
-#dlg .box,#hdlg .box,#pdlg .box,#cdlg .box{background:var(--c);border-radius:14px;padding:16px;width:min(100%,420px);display:grid;gap:10px}#dlg .row{margin:0}
+#dlg,#hdlg,#pdlg,#cdlg,#ndlg{position:fixed;inset:0;background:#000a;z-index:40;display:flex;align-items:center;justify-content:center;padding:12px}
+#dlg .box,#hdlg .box,#pdlg .box,#cdlg .box,#ndlg .box{background:var(--c);border-radius:14px;padding:16px;width:min(100%,420px);display:grid;gap:10px}#dlg .row,#ndlg .row{margin:0}
 .fam{margin-top:10px;display:flex;flex-direction:column;gap:6px;cursor:auto}.fam .card{padding:8px 10px}.fh{font-weight:600}
 .lg i{display:inline-block;width:10px;height:10px;border-radius:2px;margin:0 3px 0 8px;vertical-align:-1px}
 .card h3{margin:0 0 2px;font-size:17px}.m{color:var(--m);font-size:14px}
@@ -127,14 +127,16 @@ html,body{height:100%;overflow:hidden;overscroll-behavior:none}
 <label>Từ ngày<input type="date" id="d1"></label><label>Đến ngày<input type="date" id="d2"></label></div>
 <div class="aq"><button type="button" class="sm" data-q="0">Hôm nay</button><button type="button" class="sm" data-q="1">Hôm qua</button><button type="button" class="sm" data-q="7">7 ngày qua</button><button type="button" class="sm" data-q="m">Tháng này</button><button type="button" class="sm" id="aclr">Xóa lọc nâng cao</button></div>
 <div id="astat"></div></div>
-<div class="m lg lgrow dk"><span><i style="background:#2bb58c"></i>Đã khám (gồm đã RS)<i style="background:#f76707"></i>Đã RS, chưa khám<i style="background:#888"></i>Đã chết · RS = rà soát</span><label><input type="checkbox" id="mi"> Xem thêm thông tin</label></div>
+<div class="m lg lgrow dk"><span><i style="background:#2bb58c"></i>Đã khám (gồm đã RS)<i style="background:#f76707"></i>Đã RS, chưa khám<i style="background:#888"></i>Đã chết · RS = rà soát</span><span><button type="button" class="lnk newp">+ Thêm đối tượng mới</button> <label style="display:inline-flex;margin-left:10px"><input type="checkbox" id="mi"> Xem thêm thông tin</label></span></div>
 <div id="hd" class="dk"><span>Họ tên</span><span>Ngày sinh</span><span>CCCD</span><span>Giới tính · Thôn</span><span>Đã khám</span><span>Đã rà soát</span><span>Đi vắng</span><span>Làm cty / cơ quan</span><span>Nơi công tác</span><span>Sinh viên</span><span>Đã chết</span><span></span></div></div>
 <div id="vs"><div class="m lg mobonly" style="font-size:12px;margin:6px 0"><i style="background:#2bb58c"></i>Đã khám (gồm đã RS)<i style="background:#f76707"></i>Đã RS, chưa khám<i style="background:#888"></i>Đã chết · RS = rà soát</div>
+<div class="mobonly" style="font-size:13px;margin:0 0 6px"><button type="button" class="lnk newp" style="padding:0">+ Thêm đối tượng mới</button></div>
 <div id="res" hidden><b id="cnt"></b><button class="sm adm" id="xls" hidden>⬇ Xuất Excel</button></div>
 <div id="list"></div><p id="info" class="m"></p><div class="row"><button id="more" hidden>Xem thêm</button></div></div>
 </section>
 <section class="pg" data-p="l"><div class="vbox"><h3 style="margin:0 0 6px" id="lh">Nhật ký</h3>
 <div class="row"><input type="date" id="ld1" title="Từ ngày"><input type="date" id="ld2" title="Đến ngày"><select id="lw" class="adm" hidden><option value="">Tất cả cán bộ</option></select><button class="p s" id="lgo">Xem</button></div>
+<div class="sg adm" id="lview" hidden style="margin-bottom:0"><button type="button" class="on" data-v="cb">Xem theo cán bộ</button><button type="button" data-v="th">Xem theo thôn</button></div>
 <div id="lsum" style="margin-top:8px"></div></div><div class="m" id="ldh" style="margin:12px 2px 0;font-weight:600"></div><div id="llist"></div><div class="row"><button id="lmore" hidden>Xem thêm</button></div></section>
 <section class="pg" data-p="n"><div class="vbox"><h3 style="margin:0 0 6px">Ghi chú · Hướng dẫn</h3>
 <div class="adm" hidden><textarea id="nt" maxlength="5000" placeholder="Viết ghi chú / hướng dẫn làm việc…"></textarea>
@@ -150,7 +152,9 @@ html,body{height:100%;overflow:hidden;overscroll-behavior:none}
 </div></div></div>
 <div id="dlg" hidden><div class="box"><h3 style="margin:0">Thêm đối tượng cùng hộ</h3><div class="m" id="dinfo"></div>
 <input id="nh" placeholder="Họ và tên *"><div class="row"><input id="nd" type="date" title="Ngày sinh"><select id="ng"><option value="">Giới tính</option><option>Nam</option><option>Nữ</option></select></div>
-<input id="nc" inputmode="numeric" maxlength="12" placeholder="CCCD (12 số, có thể để trống)"><div class="row"><button id="dx">Hủy</button><button class="p" id="ds">Lưu</button></div></div></div><div id="pdlg" hidden><div class="box"><h3 style="margin:0">Đổi mật khẩu</h3><input id="p1" type="password" placeholder="Mật khẩu mới (ít nhất 6 ký tự)" autocomplete="new-password"><input id="p2" type="password" placeholder="Nhập lại mật khẩu mới" autocomplete="new-password"><div class="row"><button id="px">Hủy</button><button class="p" id="ps">Lưu</button></div></div></div>
+<input id="nc" inputmode="numeric" maxlength="12" placeholder="CCCD (12 số, có thể để trống)"><div class="row"><button id="dx">Hủy</button><button class="p" id="ds">Lưu</button></div></div></div><div id="ndlg" hidden><div class="box"><h3 style="margin:0">Thêm đối tượng mới</h3><div class="m">Tạo hộ mới, hệ thống tự cấp mã hộ (dạng MAHO0001). Muốn thêm người vào hộ đã có thì mở người đó rồi bấm "+ Thêm đối tượng" ở mục Cùng hộ.</div>
+<input id="mh" placeholder="Họ và tên *"><div class="row"><input id="md" type="date" title="Ngày sinh"><select id="mg"><option value="">Giới tính</option><option>Nam</option><option>Nữ</option></select></div>
+<input id="mc" inputmode="numeric" maxlength="12" placeholder="CCCD (12 số, có thể để trống)"><select id="mt"></select><input id="mo" placeholder="Họ tên chủ hộ (để trống = chính người này)"><div class="row"><button id="mx">Hủy</button><button class="p" id="ms2">Lưu</button></div></div></div><div id="pdlg" hidden><div class="box"><h3 style="margin:0">Đổi mật khẩu</h3><input id="p1" type="password" placeholder="Mật khẩu mới (ít nhất 6 ký tự)" autocomplete="new-password"><input id="p2" type="password" placeholder="Nhập lại mật khẩu mới" autocomplete="new-password"><div class="row"><button id="px">Hủy</button><button class="p" id="ps">Lưu</button></div></div></div>
 <div id="cdlg" hidden><div class="box"><h3 style="margin:0">Thêm CCCD</h3><div class="m" id="cinfo"></div><input id="ccn" inputmode="numeric" maxlength="12" placeholder="CCCD (12 chữ số)"><div class="row"><button id="cx">Hủy</button><button class="p" id="cs">Lưu</button></div></div></div>
 <div id="hdlg" hidden><div class="box"><h3 style="margin:0" id="htl"></h3><div id="hbody" style="max-height:60vh;overflow:auto"></div><button id="hx">Đóng</button></div></div>
 <div id="undo" hidden><span>Đã lưu ✓</span><button id="ubt">Hoàn tác</button></div><div id="toast"></div>
@@ -323,6 +327,21 @@ $('#ds').onclick=async()=>{const b=rows[addFor],ho=$('#nh').value.trim().replace
   const{data,error}=await sb.from('people').insert({ho_ten:ho,ngay_sinh:$('#nd').value||null,gioi_tinh:$('#ng').value||null,cccd:cc||null,so_hsct:b.so_hsct,chu_ho:b.chu_ho,thon:b.thon}).select().single();
   if(error)return toast(error.code=='23505'?'CCCD này đã tồn tại':'Lỗi: '+error.message);
   rows[data.id]=data;(fam[b.so_hsct]=fam[b.so_hsct]||[]).push(data.id);stat.t++;showStats();const id=addFor;closeDlg();draw(id);toast('Đã thêm đối tượng')};
+// ---- thêm đối tượng mới (hộ mới): mã hộ do CSDL tự cấp (MAHO0001…), không trùng
+document.querySelectorAll('.newp').forEach(b=>b.onclick=()=>{
+  $('#mt').innerHTML='<option value="">Chọn thôn *</option>'+[...$('#thon').options].filter(o=>o.value).map(o=>`<option>${esc(o.value)}</option>`).join('');
+  if($('#thon').value)$('#mt').value=$('#thon').value;   // đang lọc theo thôn nào thì mặc định thôn đó
+  ['#mh','#md','#mg','#mc','#mo'].forEach(s=>$(s).value='');$('#ndlg').hidden=false;$('#mh').focus()});
+$('#mx').onclick=()=>$('#ndlg').hidden=true;
+$('#ms2').onclick=async()=>{const ho=$('#mh').value.trim().replace(/\s+/g,' '),cc=$('#mc').value.trim(),th=$('#mt').value;
+  if(!ho)return toast('Nhập họ tên');if(!th)return toast('Chọn thôn');if(cc&&!/^\d{12}$/.test(cc))return toast('CCCD gồm 12 chữ số');
+  const b=$('#ms2');b.disabled=true;
+  const{data,error}=await sb.rpc('them_doi_tuong_moi',{p_ho_ten:ho,p_ngay_sinh:$('#md').value||null,p_gioi_tinh:$('#mg').value||null,p_cccd:cc||null,p_thon:th,p_chu_ho:$('#mo').value.trim()||null});
+  b.disabled=false;
+  if(error)return toast(error.code=='23505'?'CCCD này đã tồn tại':error.message.includes('does not exist')?'Chưa chạy migration mới trong Supabase':'Lỗi: '+error.message);
+  rows[data.id]=data;stat.t++;showStats();$('#ndlg').hidden=true;
+  $('#info').textContent='';$('#list').insertAdjacentHTML('afterbegin',card(data));{const pg=$('#vs').closest('.pg');if(desk())window.scrollTo(0,0);else pg.scrollTo({top:0})}
+  toast('Đã thêm · Mã hộ: '+data.so_hsct)};
 ['#q','#year'].forEach(s=>$(s).oninput=()=>{clearTimeout(timer);timer=setTimeout(search,300)});
 ['#thon','#st','#rs','#kh','#cc'].forEach(s=>$(s).onchange=()=>search());$('#more').onclick=()=>search(false);
 // ---- các trang: trên điện thoại vuốt ngang (scroll-snap, mỗi trang cuộn dọc riêng); trên máy tính bấm tab
@@ -419,12 +438,20 @@ async function openHist(id){const p=rows[id];$('#htl').textContent='Lịch sử'
 $('#hx').onclick=()=>$('#hdlg').hidden=true;
 let lpage=0,lsSeq=0;const LP=50,today=()=>new Date().toLocaleDateString('sv-SE');
 // bảng thống kê theo cán bộ: ai cũng xem được số liệu của tất cả; bảng chi tiết bên dưới chỉ xem của mình (quản trị xem tất cả)
-async function loadLogSum(from,to){const my=++lsSeq;$('#lsum').innerHTML='<div class="m">Đang thống kê…</div>';
-  const{data,error}=await sb.rpc('thong_ke_can_bo',{p_t1:from,p_t2:to});if(my!==lsSeq)return;
+let lview='cb',lastRange=null;   // lview: cb = theo cán bộ, th = theo thôn (chỉ quản trị)
+const sumRow=(name,x,extra,attr)=>{const n=v=>fmt(+v||0);return `<tr ${attr||''}><td>${name}${extra||''}</td><td>${n(x.n_rs)}</td><td>${n(x.n_kham)}</td><td>${n(x.n_cty)}</td><td>${n(x.n_sv)}</td><td>${n(x.n_dv)}</td><td>${n(x.n_chet)}</td><td><b>${n(x.n_nguoi)}</b></td><td><b>${n(x.n_thay_doi)}</b></td></tr>`};
+async function loadLogSum(from,to){const my=++lsSeq;lastRange=[from,to];const byTh=lview=='th'&&adminOn();$('#lsum').innerHTML='<div class="m">Đang thống kê…</div>';
+  const{data,error}=byTh?await sb.rpc('thong_ke_thon',{p_t1:from,p_t2:to}):await sb.rpc('thong_ke_can_bo',{p_t1:from,p_t2:to});if(my!==lsSeq)return;
   if(error){$('#lsum').innerHTML='<div class="m">Lỗi thống kê: '+esc(error.message)+' — đã chạy migration mới chưa?</div>';return}
-  const T=data||[],n=v=>fmt(+v||0),sel=$('#lw').value;
+  const T=data||[],sel=$('#lw').value,head=`<thead><tr><th>${byTh?'Thôn':'Cán bộ'}</th><th>Rà soát</th><th>Đã khám</th><th>Cty</th><th>SV</th><th>Đi vắng</th><th>Chết</th><th>Tổng số người</th><th>Tổng số thay đổi</th></tr></thead>`;
+  if(byTh){const tot={};['n_rs','n_kham','n_cty','n_sv','n_dv','n_chet','n_nguoi','n_thay_doi'].forEach(k=>tot[k]=T.reduce((a,x)=>a+(+x[k]||0),0));   // mỗi người chỉ thuộc một thôn nên cộng các thôn ra đúng tổng
+    $('#lsum').innerHTML=T.length?`<div class="m" style="font-size:12px;margin-bottom:4px">Thống kê theo thôn của người được thao tác. Rà soát…Chết: số người trong thôn đã được đánh dấu (hiện vẫn đang ở trạng thái đó). Tổng số người = số người khác nhau đã được thay đổi; Tổng số thay đổi = số lần thay đổi.</div>
+<div class="tw"><table class="at">${head}<tbody>${T.map(x=>sumRow(esc(stripAddr(x.thon)),x,'','style="cursor:default"')).join('')}${sumRow('<b>Tổng cộng</b>',tot,'','style="cursor:default;font-weight:600"')}</tbody></table></div>`:'<div class="m">Không có thay đổi trong khoảng này</div>';return}
   $('#lsum').innerHTML=T.length?`<div class="m" style="font-size:12px;margin-bottom:4px">Rà soát…Chết: số người cán bộ đã đánh dấu (hiện vẫn đang ở trạng thái đó). Tổng số người = số người khác nhau đã được thay đổi; Tổng số thay đổi = số lần thay đổi.${adminOn()?' Bấm vào dòng để xem chi tiết của cán bộ đó.':''}</div>
-<div class="tw"><table class="at"><thead><tr><th>Cán bộ</th><th>Rà soát</th><th>Đã khám</th><th>Cty</th><th>SV</th><th>Đi vắng</th><th>Chết</th><th>Tổng số người</th><th>Tổng số thay đổi</th></tr></thead><tbody>${T.map(x=>`<tr data-w="${x.uid}" class="${sel==x.uid?'sel':''}"${adminOn()?'':' style="cursor:default"'}><td>${esc(x.ten)}${me&&x.uid==me.id?' <span class="m">(bạn)</span>':''}</td><td>${n(x.n_rs)}</td><td>${n(x.n_kham)}</td><td>${n(x.n_cty)}</td><td>${n(x.n_sv)}</td><td>${n(x.n_dv)}</td><td>${n(x.n_chet)}</td><td><b>${n(x.n_nguoi)}</b></td><td><b>${n(x.n_thay_doi)}</b></td></tr>`).join('')}</tbody></table></div>`:'<div class="m">Không có thay đổi trong khoảng này</div>'}
+<div class="tw"><table class="at">${head}<tbody>${T.map(x=>sumRow(esc(x.ten),x,me&&x.uid==me.id?' <span class="m">(bạn)</span>':'',`data-w="${x.uid}" class="${sel==x.uid?'sel':''}"${adminOn()?'':' style="cursor:default"'}`)).join('')}</tbody></table></div>`:'<div class="m">Không có thay đổi trong khoảng này</div>'}
+$('#lview').addEventListener('click',e=>{const b=e.target.closest('button[data-v]');if(!b||!adminOn()||b.dataset.v==lview)return;lview=b.dataset.v;
+  document.querySelectorAll('#lview button').forEach(x=>x.classList.toggle('on',x.dataset.v==lview));
+  const[f,t]=lastRange||[null,null];if(f)loadLogSum(f,t);else loadLog()});
 async function loadLog(reset=true,sum=true){
   if(reset){lpage=0;$('#llist').innerHTML='';if(!$('#ld1').value)$('#ld1').value=today()}
   const d1=$('#ld1').value||today(),d2=$('#ld2').value||d1,from=new Date(d1+'T00:00:00').toISOString(),to=new Date(d2+'T23:59:59.999').toISOString();
