@@ -86,6 +86,8 @@ textarea{width:100%;min-height:84px;resize:vertical;display:block}
 .ag{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
 .ag label{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--m)}.ag select,.ag input{width:100%;color:var(--t)}
 .aq{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.at tr.gh td{background:rgba(43,181,140,.14);font-weight:600;text-align:left;white-space:normal}
+.sg.lsb{margin:8px 0 0}
 .stg{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:6px;margin-top:6px}
 .chip{display:flex;flex-direction:column;align-items:flex-start;text-align:left;padding:6px 10px;min-height:0;border-radius:10px;gap:0}
 .chip b{font-size:21px;line-height:1.2}.chip span{font-size:12px;color:var(--m)}.chip:hover{border-color:var(--p)}
@@ -124,7 +126,10 @@ html,body{height:100%;overflow:hidden;overscroll-behavior:none}
 <div id="adv" hidden><div class="ag">
 <label>Cán bộ thực hiện<select id="aw"><option value="">Tất cả cán bộ</option></select></label>
 <label>Việc đã làm<select id="ae"><option value="">Bất kỳ thay đổi nào</option><option value="ra_soat">Rà soát</option><option value="kham">Đã khám</option><option value="cty">Làm cty/cơ quan</option><option value="sinh_vien">Sinh viên</option><option value="di_vang">Đi vắng</option><option value="chet">Đã chết</option></select></label>
-<label>Từ ngày<input type="date" id="d1"></label><label>Đến ngày<input type="date" id="d2"></label></div>
+<label>Thao tác từ ngày<input type="date" id="d1"></label><label>Thao tác đến ngày<input type="date" id="d2"></label>
+<label>Thôn<select id="at"><option value="">Tất cả thôn</option></select></label>
+<label>Nhóm tuổi<select id="aa"><option value="">Tất cả độ tuổi</option><option value="0-6">0–6 tuổi (dưới 6)</option><option value="6-18">6–18 tuổi (từ 6 đến dưới 18)</option><option value="18+">Trên 18 tuổi (từ 18)</option></select></label>
+<label>Ngày sinh từ<input type="date" id="b1"></label><label>Ngày sinh đến<input type="date" id="b2"></label></div>
 <div class="aq"><button type="button" class="sm" data-q="0">Hôm nay</button><button type="button" class="sm" data-q="1">Hôm qua</button><button type="button" class="sm" data-q="7">7 ngày qua</button><button type="button" class="sm" data-q="m">Tháng này</button><button type="button" class="sm" id="aclr">Xóa lọc nâng cao</button></div>
 <div id="astat"></div></div>
 <div class="m lg lgrow dk"><span><i style="background:#2bb58c"></i>Đã khám (gồm đã RS)<i style="background:#f76707"></i>Đã RS, chưa khám<i style="background:#888"></i>Đã chết · RS = rà soát</span><span><button type="button" class="lnk newp">+ Thêm đối tượng mới</button> <label style="display:inline-flex;margin-left:10px"><input type="checkbox" id="mi"> Xem thêm thông tin</label></span></div>
@@ -137,6 +142,7 @@ html,body{height:100%;overflow:hidden;overscroll-behavior:none}
 <section class="pg" data-p="l"><div class="vbox"><h3 style="margin:0 0 6px" id="lh">Nhật ký</h3>
 <div class="row"><input type="date" id="ld1" title="Từ ngày"><input type="date" id="ld2" title="Đến ngày"><select id="lw" class="adm" hidden><option value="">Tất cả cán bộ</option></select><button class="p s" id="lgo">Xem</button></div>
 <div class="sg adm" id="lview" hidden style="margin-bottom:0"><button type="button" class="on" data-v="cb">Xem theo cán bộ</button><button type="button" data-v="th">Xem theo thôn</button></div>
+<div class="sg lsb" id="lsub" hidden><button type="button" class="on" data-s="tt">Tổng hợp theo thôn</button><button type="button" data-s="tc">Theo cán bộ trong thôn</button></div>
 <div id="lsum" style="margin-top:8px"></div></div><div class="m" id="ldh" style="margin:12px 2px 0;font-weight:600"></div><div id="llist"></div><div class="row"><button id="lmore" hidden>Xem thêm</button></div></section>
 <section class="pg" data-p="n"><div class="vbox"><h3 style="margin:0 0 6px">Ghi chú · Hướng dẫn</h3>
 <div class="adm" hidden><textarea id="nt" maxlength="5000" placeholder="Viết ghi chú / hướng dẫn làm việc…"></textarea>
@@ -187,7 +193,7 @@ async function start(u){
 async function init(){
   loadStats();if(adminOn())loadWho();
   $('#rs').innerHTML='<option value="">Rà soát: tất cả</option>'+RS.map(x=>`<option>${x}</option>`).join('');
-  const{data:t}=await sb.rpc('list_thons');const keepT=$('#thon').value;$('#thon').innerHTML='<option value="">Tất cả thôn</option>'+(t||[]).map(x=>`<option>${esc(x)}</option>`).join('');$('#thon').value=keepT;
+  const{data:t}=await sb.rpc('list_thons');const keepT=$('#thon').value;$('#thon').innerHTML='<option value="">Tất cả thôn</option>'+(t||[]).map(x=>`<option>${esc(x)}</option>`).join('');$('#thon').value=keepT;$('#at').innerHTML=$('#thon').innerHTML;$('#at').value=keepT;
   const{data:w}=await sb.from('workplaces').select('name').order('name').limit(5000);wps=(w||[]).map(x=>x.name);fillWp();search();}
 const fillWp=()=>{let d=$('#wpl');if(!d){d=document.createElement('datalist');d.id='wpl';document.body.append(d)}d.innerHTML=wps.map(x=>`<option value="${esc(x)}">`).join('')};
 const canon=n=>{n=(n||'').trim().replace(/\s+/g,' ');return wps.find(x=>norm(x)==norm(n))||n};
@@ -220,8 +226,8 @@ async function search(reset=true){
     plain=base.replace(/[%_\\,()*]/g,''),acc=!!plain&&!/^\d+$/.test(plain)&&base!==nfc;
   const yr=$('#year').value?+$('#year').value:null,th=$('#thon').value||null,rs=$('#rs').value||null;
   const F=getFilt(),kh=F.kh;
-  const A=getAdv(),advOn=!!(A.ev||A.who||A.t1||A.t2);$('#advb').classList.toggle('act',advOn);
-  const f={p_yr:yr,p_th:th,p_kh:kh,p_rs:rs,p_flags:F.flags.length?F.flags:null,p_all:F.all,p_thieu:F.thieu,p_ev:A.ev,p_who:A.who,p_t1:A.t1,p_t2:A.t2};
+  const A=getAdv(),advOn=!!(A.ev||A.who||A.t1||A.t2||A.age||A.b1||A.b2);$('#advb').classList.toggle('act',advOn);
+  const f={p_yr:yr,p_th:th,p_kh:kh,p_rs:rs,p_flags:F.flags.length?F.flags:null,p_all:F.all,p_thieu:F.thieu,p_ev:A.ev,p_who:A.who,p_t1:A.t1,p_t2:A.t2,...ageArgs(A)};
   const r=await sb.rpc('search_people',{p_q:plain,p_qa:acc&&plain.length>=3&&!advOn?vnCanon(nfc).replace(/[%_\\]/g,''):'',...f,p_off:page*PAGE,p_lim:PAGE});
   if(my!==seq)return;   // đã có lần tìm mới hơn, bỏ kết quả cũ
   lastArgs={p_q:plain,...f};
@@ -368,21 +374,28 @@ document.querySelectorAll('#tabs [data-t]').forEach(b=>b.onclick=()=>showPage(b.
 async function loadWho(){const{data:u}=await sb.rpc('ds_nguoi_dung');if(u)fillWho(u)}
 function fillWho(u){const o='<option value="">Tất cả cán bộ</option>'+u.map(x=>`<option value="${x.id}">${esc(x.ho_ten)}</option>`).join('');['#aw','#lw'].forEach(s=>{const el=$(s),v=el.value;el.innerHTML=o;el.value=v})}
 // ---- tìm kiếm nâng cao (chỉ quản trị): lọc + thống kê theo nhật ký thao tác
-function getAdv(){if(!adminOn())return{ev:null,who:null,t1:null,t2:null};
+function getAdv(){if(!adminOn())return{ev:null,who:null,t1:null,t2:null,age:null,b1:null,b2:null};
   const d1=$('#d1').value,d2=$('#d2').value||d1;let t1=null,t2=null;
   if(d1)t1=new Date(d1+'T00:00:00').toISOString();if(d2)t2=new Date(d2+'T23:59:59.999').toISOString();
-  return{ev:$('#ae').value||null,who:$('#aw').value||null,t1,t2}}
+  let b1=$('#b1').value||null,b2=$('#b2').value||null;if(b1&&b2&&b1>b2)[b1,b2]=[b2,b1];
+  return{ev:$('#ae').value||null,who:$('#aw').value||null,t1,t2,age:$('#aa').value||null,b1,b2}}
 let advT,astSeq=0;const ymd=d=>d.toLocaleDateString('sv-SE');
 const advGo=()=>{clearTimeout(advT);advT=setTimeout(()=>{search();loadAdvStats()},150)};
 $('#advb').onclick=()=>{const o=$('#adv').hidden;$('#adv').hidden=!o;$('#ts').classList.toggle('advopen',o);$('#advb').classList.toggle('open',o);if(o)loadAdvStats()};
-['#aw','#ae','#d1','#d2'].forEach(s=>$(s).onchange=advGo);$('#thon').addEventListener('change',()=>loadAdvStats());
+['#aw','#ae','#d1','#d2','#aa','#b1','#b2'].forEach(s=>$(s).onchange=advGo);
+$('#thon').addEventListener('change',()=>{$('#at').value=$('#thon').value;loadAdvStats()});
+$('#at').onchange=()=>{$('#thon').value=$('#at').value;advGo()};   // ô Thôn trong tìm kiếm nâng cao dùng chung với ô Thôn ở thanh lọc chính
 const rangeTxt=()=>{const a=$('#d1').value,b=$('#d2').value||a;return a||b?(a==b?'ngày '+dmy(a):`từ ${a?dmy(a):'…'} đến ${b?dmy(b):'nay'}`):'toàn bộ thời gian'};
+// chỉ gửi tham số tuổi / ngày sinh khi thật sự dùng, để bản CSDL cũ (chưa chạy migration_loc_tuoi_thon_can_bo) vẫn tìm kiếm bình thường
+const ageArgs=A=>{const o={};if(A.age)o.p_age=A.age;if(A.b1)o.p_b1=A.b1;if(A.b2)o.p_b2=A.b2;return o};
+const AGEL={'0-6':'0–6 tuổi','6-18':'6–18 tuổi','18+':'trên 18 tuổi'};
+const ageTxt=()=>{const A=getAdv(),p=[];if(A.age)p.push(AGEL[A.age]);if(A.b1||A.b2)p.push(`sinh ${A.b1?'từ '+dmy(A.b1):''}${A.b1&&A.b2?' ':''}${A.b2?'đến '+dmy(A.b2):''}`);return p.join(', ')};
 async function loadAdvStats(){if(!adminOn()||$('#adv').hidden)return;const my=++astSeq,A=getAdv(),th=$('#thon').value||null;$('#astat').innerHTML='<div class="m" style="margin-top:10px">Đang thống kê…</div>';
-  const a=await sb.rpc('thong_ke_ra_soat',{p_who:A.who,p_th:th,p_t1:A.t1,p_t2:A.t2});
+  const a=await sb.rpc('thong_ke_ra_soat',{p_who:A.who,p_th:th,p_t1:A.t1,p_t2:A.t2,...ageArgs(A)});
   if(my!==astSeq)return;if(a.error){$('#astat').innerHTML='<div class="m" style="margin-top:10px">Lỗi thống kê: '+esc(a.error.message)+' — đã chạy migration mới chưa?</div>';return}
   const r=(a.data||[])[0]||{},n=+r.n_tong||0,who=A.who?$('#aw').selectedOptions[0].text:'';
   const chips=[['rs','được rà soát',n,0],['kham','đã khám',r.n_kham,1],['sv','là sinh viên',r.n_sv,1],['cty','làm cty/cơ quan',r.n_cty,1],['dv','đi vắng',r.n_dv,1],['chet','đã chết',r.n_chet,1]];
-  $('#astat').innerHTML=`<div style="margin-top:10px"><b>Thống kê ${rangeTxt()}${who?' · '+esc(who):''}${th?' · '+esc(th):''}</b></div>
+  $('#astat').innerHTML=`<div style="margin-top:10px"><b>Thống kê ${rangeTxt()}${who?' · '+esc(who):''}${th?' · '+esc(th):''}${ageTxt()?' · '+esc(ageTxt()):''}</b></div>
 <div class="m" style="font-size:12px;margin:2px 0 4px">Ô đầu = số người được rà soát; các ô sau = trong số đó hiện đã khám / là sinh viên… Bấm vào ô để xem danh sách.</div>
 <div class="stg">${chips.map(([c,l,v,p])=>`<button type="button" class="chip" data-c="${c}"><b>${fmt(+v||0)}</b><span>${l}${p&&n?' · '+Math.round((+v||0)*100/n)+'%':''}</span></button>`).join('')}</div>`}
 function applyChip(c){$('#ae').value='ra_soat';$('#kh').value='';$('#st').value='';document.querySelectorAll('#msp input').forEach(x=>x.checked=false);
@@ -393,7 +406,7 @@ $('#adv').addEventListener('click',e=>{
   const q=e.target.closest('[data-q]');if(q){const z=n=>{const d=new Date();d.setDate(d.getDate()-n);return ymd(d)},k=q.dataset.q,now=new Date();let a,c=z(0);
     if(k=='0')a=c;else if(k=='1')a=c=z(1);else if(k=='7')a=z(6);else a=ymd(new Date(now.getFullYear(),now.getMonth(),1));
     $('#d1').value=a;$('#d2').value=c;advGo();return}
-  if(e.target.closest('#aclr')){$('#aw').value=$('#ae').value=$('#d1').value=$('#d2').value='';advGo();return}
+  if(e.target.closest('#aclr')){$('#aw').value=$('#ae').value=$('#d1').value=$('#d2').value=$('#aa').value=$('#b1').value=$('#b2').value=$('#at').value=$('#thon').value='';advGo();return}
   const ch=e.target.closest('.chip');if(ch){applyChip(ch.dataset.c);return}
   });
 // ---- ghi chú cá nhân
@@ -417,7 +430,7 @@ $('#nlist').addEventListener('click',async e=>{const b=e.target.closest('[data-n
 // ---- xuất Excel (quản trị)
 const fdt=t=>{if(!t)return'';const d=new Date(t),z=n=>String(n).padStart(2,'0');return `${z(d.getDate())}/${z(d.getMonth()+1)}/${d.getFullYear()} ${z(d.getHours())}:${z(d.getMinutes())}`};
 const fdesc=()=>{const p=[];if($('#q').value.trim())p.push('tìm "'+$('#q').value.trim()+'"');if($('#year').value)p.push('sinh '+$('#year').value);
-  if($('#thon').value)p.push($('#thon').value);{const F=getFilt();if(F.kh!==null)p.push(F.kh?'Đã khám':'Chưa khám');if(F.flags.length)p.push(F.flags.map(x=>FLN[x]).join(F.all?' + ':' / '));if(F.thieu)p.push('Thiếu CCCD')}if($('#rs').value)p.push($('#rs').value);{const A=getAdv();if(A.ev||A.who||A.t1||A.t2)p.push('nâng cao: '+[$('#ae').value?$('#ae').selectedOptions[0].text:'bất kỳ thay đổi',$('#aw').value?'cán bộ '+$('#aw').selectedOptions[0].text:'',$('#d1').value||$('#d2').value?($('#d1').value||'')+'→'+($('#d2').value||$('#d1').value):''].filter(Boolean).join(', '))}return p.join(', ')};
+  if($('#thon').value)p.push($('#thon').value);{const F=getFilt();if(F.kh!==null)p.push(F.kh?'Đã khám':'Chưa khám');if(F.flags.length)p.push(F.flags.map(x=>FLN[x]).join(F.all?' + ':' / '));if(F.thieu)p.push('Thiếu CCCD')}if($('#rs').value)p.push($('#rs').value);{const A=getAdv();if(A.ev||A.who||A.t1||A.t2||A.age||A.b1||A.b2)p.push('nâng cao: '+[$('#ae').value?$('#ae').selectedOptions[0].text:'bất kỳ thay đổi',$('#aw').value?'cán bộ '+$('#aw').selectedOptions[0].text:'',$('#d1').value||$('#d2').value?($('#d1').value||'')+'→'+($('#d2').value||$('#d1').value):'',ageTxt()].filter(Boolean).join(', '))}return p.join(', ')};
 const XH=['STT','Họ và tên','Ngày sinh','Giới tính','CCCD','Họ và tên chủ hộ','Số HSCT','Nơi thường trú','Nhóm đối tượng','Tình trạng khám','Nơi khám','Đang làm công ty','Nơi công tác','Trạng thái rà soát','Đi vắng','Sinh viên','Đã chết','Cập nhật lần cuối bởi','Cập nhật lúc'];
 const yk=v=>v?'Có':'Không';
 $('#xls').onclick=async()=>{const b=$('#xls'),lab=b.textContent,all=[];b.disabled=true;
@@ -438,19 +451,25 @@ async function openHist(id){const p=rows[id];$('#htl').textContent='Lịch sử'
 $('#hx').onclick=()=>$('#hdlg').hidden=true;
 let lpage=0,lsSeq=0;const LP=50,today=()=>new Date().toLocaleDateString('sv-SE');
 // bảng thống kê theo cán bộ: ai cũng xem được số liệu của tất cả; bảng chi tiết bên dưới chỉ xem của mình (quản trị xem tất cả)
-let lview='cb',lastRange=null;   // lview: cb = theo cán bộ, th = theo thôn (chỉ quản trị)
+let lview='cb',lsub='tt',lastRange=null;   // lview: cb = theo cán bộ, th = theo thôn (chỉ quản trị)
 const sumRow=(name,x,extra,attr)=>{const n=v=>fmt(+v||0);return `<tr ${attr||''}><td>${name}${extra||''}</td><td>${n(x.n_rs)}</td><td>${n(x.n_kham)}</td><td>${n(x.n_cty)}</td><td>${n(x.n_sv)}</td><td>${n(x.n_dv)}</td><td>${n(x.n_chet)}</td><td><b>${n(x.n_nguoi)}</b></td><td><b>${n(x.n_thay_doi)}</b></td></tr>`};
-async function loadLogSum(from,to){const my=++lsSeq;lastRange=[from,to];const byTh=lview=='th'&&adminOn();$('#lsum').innerHTML='<div class="m">Đang thống kê…</div>';
-  const{data,error}=byTh?await sb.rpc('thong_ke_thon',{p_t1:from,p_t2:to}):await sb.rpc('thong_ke_can_bo',{p_t1:from,p_t2:to});if(my!==lsSeq)return;
+async function loadLogSum(from,to){const my=++lsSeq;lastRange=[from,to];const byTh=lview=='th'&&adminOn(),byTc=byTh&&lsub=='tc';$('#lsum').innerHTML='<div class="m">Đang thống kê…</div>';
+  const{data,error}=byTc?await sb.rpc('thong_ke_thon_can_bo',{p_t1:from,p_t2:to}):byTh?await sb.rpc('thong_ke_thon',{p_t1:from,p_t2:to}):await sb.rpc('thong_ke_can_bo',{p_t1:from,p_t2:to});if(my!==lsSeq)return;
   if(error){$('#lsum').innerHTML='<div class="m">Lỗi thống kê: '+esc(error.message)+' — đã chạy migration mới chưa?</div>';return}
-  const T=data||[],sel=$('#lw').value,head=`<thead><tr><th>${byTh?'Thôn':'Cán bộ'}</th><th>Rà soát</th><th>Đã khám</th><th>Cty</th><th>SV</th><th>Đi vắng</th><th>Chết</th><th>Tổng số người</th><th>Tổng số thay đổi</th></tr></thead>`;
+  const T=data||[],sel=$('#lw').value,head=`<thead><tr><th>${byTc?'Thôn / Cán bộ':byTh?'Thôn':'Cán bộ'}</th><th>Rà soát</th><th>Đã khám</th><th>Cty</th><th>SV</th><th>Đi vắng</th><th>Chết</th><th>Tổng số người</th><th>Tổng số thay đổi</th></tr></thead>`;
+  if(byTc){const g=new Map();T.forEach(x=>{if(!g.has(x.thon))g.set(x.thon,[]);g.get(x.thon).push(x)});
+    $('#lsum').innerHTML=T.length?`<div class="m" style="font-size:12px;margin-bottom:4px">Mỗi thôn liệt kê các cán bộ đã rà soát ở thôn đó (chỉ tính cán bộ có ít nhất 1 người được rà soát trong khoảng này). Cột Rà soát = số người cán bộ đó đã rà soát trong thôn (hiện vẫn ở trạng thái đã rà soát). Dòng thôn: số cán bộ · số người khác nhau được rà soát (một người do 2 cán bộ cùng đánh dấu chỉ tính 1).</div>
+<div class="tw"><table class="at">${head}<tbody>${[...g].map(([th,L])=>`<tr class="gh" style="cursor:default"><td colspan="9">${esc(stripAddr(th))} · ${fmt(+L[0].n_cb_thon||L.length)} cán bộ · ${fmt(+L[0].n_rs_thon||0)} người được rà soát</td></tr>`+L.map(x=>sumRow(esc(x.ten),x,'','style="cursor:default"')).join('')).join('')}</tbody></table></div>`:'<div class="m">Không có người nào được rà soát trong khoảng này</div>';return}
   if(byTh){const tot={};['n_rs','n_kham','n_cty','n_sv','n_dv','n_chet','n_nguoi','n_thay_doi'].forEach(k=>tot[k]=T.reduce((a,x)=>a+(+x[k]||0),0));   // mỗi người chỉ thuộc một thôn nên cộng các thôn ra đúng tổng
     $('#lsum').innerHTML=T.length?`<div class="m" style="font-size:12px;margin-bottom:4px">Thống kê theo thôn của người được thao tác. Rà soát…Chết: số người trong thôn đã được đánh dấu (hiện vẫn đang ở trạng thái đó). Tổng số người = số người khác nhau đã được thay đổi; Tổng số thay đổi = số lần thay đổi.</div>
 <div class="tw"><table class="at">${head}<tbody>${T.map(x=>sumRow(esc(stripAddr(x.thon)),x,'','style="cursor:default"')).join('')}${sumRow('<b>Tổng cộng</b>',tot,'','style="cursor:default;font-weight:600"')}</tbody></table></div>`:'<div class="m">Không có thay đổi trong khoảng này</div>';return}
   $('#lsum').innerHTML=T.length?`<div class="m" style="font-size:12px;margin-bottom:4px">Rà soát…Chết: số người cán bộ đã đánh dấu (hiện vẫn đang ở trạng thái đó). Tổng số người = số người khác nhau đã được thay đổi; Tổng số thay đổi = số lần thay đổi.${adminOn()?' Bấm vào dòng để xem chi tiết của cán bộ đó.':''}</div>
 <div class="tw"><table class="at">${head}<tbody>${T.map(x=>sumRow(esc(x.ten),x,me&&x.uid==me.id?' <span class="m">(bạn)</span>':'',`data-w="${x.uid}" class="${sel==x.uid?'sel':''}"${adminOn()?'':' style="cursor:default"'}`)).join('')}</tbody></table></div>`:'<div class="m">Không có thay đổi trong khoảng này</div>'}
-$('#lview').addEventListener('click',e=>{const b=e.target.closest('button[data-v]');if(!b||!adminOn()||b.dataset.v==lview)return;lview=b.dataset.v;
+$('#lview').addEventListener('click',e=>{const b=e.target.closest('button[data-v]');if(!b||!adminOn()||b.dataset.v==lview)return;lview=b.dataset.v;$('#lsub').hidden=lview!='th';
   document.querySelectorAll('#lview button').forEach(x=>x.classList.toggle('on',x.dataset.v==lview));
+  const[f,t]=lastRange||[null,null];if(f)loadLogSum(f,t);else loadLog()});
+$('#lsub').addEventListener('click',e=>{const b=e.target.closest('button[data-s]');if(!b||!adminOn()||b.dataset.s==lsub)return;lsub=b.dataset.s;
+  document.querySelectorAll('#lsub button').forEach(x=>x.classList.toggle('on',x.dataset.s==lsub));
   const[f,t]=lastRange||[null,null];if(f)loadLogSum(f,t);else loadLog()});
 async function loadLog(reset=true,sum=true){
   if(reset){lpage=0;$('#llist').innerHTML='';if(!$('#ld1').value)$('#ld1').value=today()}
