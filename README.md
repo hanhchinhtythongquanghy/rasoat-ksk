@@ -11,6 +11,7 @@
   Các tài khoản đang có sẽ tự thành "cán bộ".
 
 - Bản có "Thêm đối tượng mới" (mã hộ tự sinh MAHOxxxx) và "Xem theo thôn" ở Nhật ký: chạy thêm `migration_them_doi_tuong_thon.sql` (sau 2 file trên), rồi thay `index.html`.
+- Bản có lọc **nhóm tuổi / ngày sinh / thôn** ở Tìm kiếm nâng cao và "Theo cán bộ trong thôn" ở Nhật ký: chạy thêm `migration_loc_tuoi_thon_can_bo.sql` (sau 3 file trên; không chạy lại `migration_tong_hop.sql` sau file này), rồi thay `index.html`.
 
 # Tài khoản quản trị (admin)
 1. Supabase → Authentication → Users → Add user: nhập email + mật khẩu mạnh, tick "Auto Confirm User".
